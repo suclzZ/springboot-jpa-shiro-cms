@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>后台管理系统</title>
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/static/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/static/css/admin.css" />
+</head>
+
+<body>
+    <div id="content-itemcode" class="page-content-wrap">
+        <div id="layer_addgroup" class="layui-card" style="display: none">
+            <form class="layui-form layui-card-body" lay-filter="filter_form_addgroup">
+                <div class="layui-form-item layui-hide">
+                    <label class="layui-form-label">ID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="groupId" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">组编码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="groupName" lay-verify="required" placeholder="组编码" autocomplete="off"
+                            class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">组名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="groupCaption" placeholder="组名称" autocomplete="off"
+                            class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">组类型</label>
+                    <div class="layui-input-block">
+                        <select name="groupType">
+                            <option value=""></option>
+                            <option value="01" selected>数据集</option>
+                            <option value="02">Sql集</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-input-block layui-hide">
+                    <button class="layui-btn" lay-submit lay-filter="form_submitgroup"></button>
+                    <!--<button id="btn_form_add_reset" type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+                </div>
+            </form>
+        </div>
+        <div class="layui-form">
+            <!--<form class="layui-form" action="">-->
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <input type="text" name="groupCaption" operate="LIKE" required lay-verify="required" placeholder="请输入组名称"
+                            autocomplete="off" class="layui-input">
+                    </div>
+                    <button class="layui-btn layui-btn-normal layui-btn-sm" data-method="search"><i
+                            class="layui-icon layui-icon-search"></i>搜索</button>
+                </div>
+            <!--</form>-->
+            <table id="table_codegroup" lay-filter="filter_table_codegroup" class="layui-table" lay-skin="line"></table>
+            <script type="text/html" id="toolbar_codegroup">
+                <a class="layui-btn layui-btn-normal  layui-btn-sm" lay-event="add"><i
+                        class="layui-icon layui-icon-add-1"></i>添加</a>
+            </script>
+            <script type="text/html" id="optbar_codegroup">
+                <a class="layui-icon layui-icon-edit" lay-event="edit"></a>
+                <a class="layui-icon layui-icon-delete" lay-event="del"></a>
+            </script>
+        </div>
+        <div id="layer_additem" class="layui-card" style="display: none">
+            <form class="layui-form layui-card-body" lay-filter="filter_form_additem">
+                <div class="layui-form-item layui-hide">
+                    <label class="layui-form-label">ID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="itemId" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-hide">
+                    <label class="layui-form-label">GID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="codegroup.groupId" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项编码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="itemCode" lay-verify="required" placeholder="项编码" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="itemName" placeholder="项名称" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项类型</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="itemType" placeholder="项类型" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-input-block layui-hide">
+                    <button class="layui-btn" lay-submit lay-filter="form_submititem"></button>
+                    <!--<button id="btn_form_add_reset" type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+                </div>
+            </form>
+        </div>
+        <div class="layui-form">
+            <table id="table_codeitem" lay-filter="filter_table_codeitem" class="layui-table" lay-skin="line" lay-size="sm">
+            </table>
+            <script type="text/html" id="toolbar_codeitem">
+                <a class="layui-btn layui-btn-normal  layui-btn-sm" lay-event="add"><i
+                        class="layui-icon layui-icon-add-1"></i>添加</a>
+            </script>
+            <script type="text/html" id="optbar_codeitem">
+                <a class="layui-icon layui-icon-edit" lay-event="edit"></a>
+                <a class="layui-icon layui-icon-delete" lay-event="del"></a>
+            </script>
+        </div>
+    </div>
+    <script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+    <script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
+    <script>
+        layui.use(['layer', 'table', 'form','tool','app'], function () {
+            var layer = layui.layer,
+                table = layui.table,
+                form = layui.form,
+                $ = layui.$,tool=layui.tool,app=layui.app;
+
+            //列表加载数据
+            var tableIns1 = table.render({
+                elem: '#table_codegroup',
+                title:'代码组',
+                toolbar: '#toolbar_codegroup',
+                cols: [
+                    [
+                        {
+                            field: 'groupId',
+                            title: 'ID',
+                            hide: true
+                        },
+                        {
+                            field: 'groupName',
+                            title: '组名称',
+                            width: '25%'
+                        },
+                        {
+                            field: 'groupCaption',
+                            title: '组描述',
+                            width: '25%'
+                        },
+                        {
+                            field: 'groupType',
+                            title: '组类型',
+                            width: '30%'
+                        },
+                        {
+                            toolbar: '#optbar_codegroup',
+                            title: '操作'
+                        }
+                    ]
+                ],
+                url: app.contextPath+'/codegroup',
+                page: true,
+                limit: 8,
+                limits: 8,
+                defaultToolbar:null,
+                request: {
+                    pageName: 'pager:pageIndex', //页码的参数名称，默认：page
+                    limitName: 'pager:pageSize' //每页数据量的参数名，默认：limit
+                },
+                response: {
+                    // statusName: 'status', //规定数据状态的字段名称，默认：code
+                    statusCode: 'OK', //规定成功的状态码，默认：0
+                },
+                parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.status, //解析接口状态
+                        "msg": res.info, //解析提示文本
+                        "count": res.result.total, //解析数据长度
+                        "data": res.result.result //解析数据列表
+                    };
+                }
+            });
+            var tableIns2 = table.render({
+                id:'table_codeitem',
+                elem: '#table_codeitem',
+                title:'代码项',
+                toolbar: '#toolbar_codeitem',
+                cols: [
+                    [
+                        {
+                            field: 'itemId',
+                            title: 'ID',
+                            hide: true
+                        },
+                        {
+                            field: 'groupId',
+                            title: 'groupId',
+                            hide: true
+                        },
+                        {
+                            field: 'itemCode',
+                            title: '项编码',
+                            width: '25%'
+                        },
+                        {
+                            field: 'itemName',
+                            title: '项名称',
+                            width: '25%'
+                        },
+                        {
+                            field: 'itemType',
+                            title: '项类型',
+                            width: '30%'
+                        },
+                        {
+                            toolbar: '#optbar_codeitem',
+                            title: '操作'
+                        }
+                    ]
+                ],
+                page: true,
+                limit: 8,
+                // limits: 8,
+                defaultToolbar:null,
+                request: {
+                    pageName: 'pager:pageIndex', //页码的参数名称，默认：page
+                    limitName: 'pager:pageSize' //每页数据量的参数名，默认：limit
+                },
+                response: {
+                    // statusName: 'status', //规定数据状态的字段名称，默认：code
+                    statusCode: 'OK', //规定成功的状态码，默认：0
+                },
+                parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.status, //解析接口状态
+                        "msg": res.info, //解析提示文本
+                        "count": res.result.total, //解析数据长度
+                        "data": res.result.result //解析数据列表
+                    };
+                }
+            });
+            //工具栏
+            table.on('toolbar(filter_table_codegroup)', function (obj) {
+                switch (obj.event) {
+                    case 'add':
+                        openGroupForm();
+                        break;
+                };
+            });
+            form.on('submit(form_submitgroup)', function (data) {
+                tool.http.ajax({
+                    url:'/codegroup',
+                    data:data.field,
+                    success:function(){
+                        layer.close($(data.form).data('layer-index'));
+                        tableIns1.reload();
+                        tool.msg.ok('操作成功！');
+                    }
+                })
+                return false;
+            });
+            table.on('row(filter_table_codegroup)', function (obj) {
+                //obj.tr、obj.data
+                tableIns1.selectTr = obj.data.groupId;//关联主键
+                $(obj.tr).addClass('layui-table-selected').siblings().removeClass('layui-table-selected');
+                table.reload('table_codeitem', {
+                    url: app.contextPath+'/codeitem',
+                    where:{'codegroup.groupId':obj.data.groupId}
+                })
+            });
+            table.on('rowDouble(filter_table_codegroup)', function (obj) {
+            });
+            //操作栏
+            table.on('tool(filter_table_codegroup)', function (obj) {
+                var layEvent = obj.event;
+                if(layEvent === 'detail'){ //查看
+                    //do somehing
+                } else if(layEvent === 'del'){ //删除
+                    tool.msg.confirm('确定删除该条数据?', function(index){
+                        obj.del();
+                        layer.close(index);
+                        tool.http.ajax({
+                            url:'/codegroup/'+obj.data.groupId,
+                            method:'delete',
+                            success:function(){
+                                tool.msg.ok('删除成功！');
+                            }
+                        });
+                    });
+                } else if(layEvent === 'edit'){ //编辑
+                    openGroupForm();
+                    form.val('filter_form_addgroup',obj.data);
+                    // obj.update();
+                }
+            });
+
+            table.on('toolbar(filter_table_codeitem)', function (obj) {
+                switch (obj.event) {
+                    case 'add':
+                        if(!tableIns1.selectTr){
+                            tool.msg.warn('请先选中代码组！');return;
+                        }
+                        openItemForm();
+                        form.val('filter_form_additem',{'codegroup.groupId':tableIns1.selectTr});
+                };
+            });
+            form.on('submit(form_submititem)', function (data) {
+                tool.http.ajax({
+                    url:'/codeitem',
+                    data:data.field,
+                    success:function(){
+                        layer.close($(data.form).data('layer-index'));
+                        tool.msg.ok('操作成功！');
+                        table.reload('table_codeitem', {
+                            url: app.contextPath+'/codeitem',
+                            where:{'codegroup.groupId':tableIns1.selectTr}
+                        })
+                    }
+                })
+                return false;
+            });
+            //操作栏
+            table.on('tool(filter_table_codeitem)', function (obj) {
+                var layEvent = obj.event;
+                if(layEvent === 'detail'){ //查看
+                    //do somehing
+                } else if(layEvent === 'del'){ //删除
+                    tool.msg.confirm('确定删除该条数据?', function(index){
+                        obj.del();
+                        layer.close(index);
+                        tool.http.ajax({
+                            url:'/codeitem/'+obj.data.itemId,
+                            method:'delete',
+                            success:function(){
+                                tool.msg.ok('删除成功！');
+                            }
+                        });
+                    });
+                } else if(layEvent === 'edit'){ //编辑
+                    openItemForm();
+                    form.val('filter_form_additem',tool.object.objConvert(obj.data));
+                    // obj.update();
+                }
+            });
+
+
+            //按钮事件
+            var active = {
+                search:function(btn){
+                    var conditions = [];
+                    $(btn).parent().find('input').each(function(){
+                        conditions.push({property:$(this).attr('name'),value:$(this).val(),operate:$(this).attr('operate')})//
+                    });
+                    tableIns1.reload({
+                        where:{_conditions:JSON.stringify(conditions)}
+                    });
+                }
+            };
+            //data-method进行按钮绑定
+            $('#content-itemcode .layui-btn').on('click', function () {
+                var othis = $(this),
+                    method = othis.data('method');
+                active[method] ? active[method].call(this, othis) : '';
+            });
+
+            function openGroupForm(callback) {
+                openForm($('#layer_addgroup'),'代码组');
+            }
+            function openItemForm() {
+                openForm($('#layer_additem'),'代码项');
+            }
+            function openForm(ele,title,call) {
+                layer.open({
+                    type: 1,
+                    area: ['600px', '350px'],
+                    shade: 0.5,
+                    fixed: true,
+                    skin: 'custom-layer-class',
+                    offset: 'auto',
+                    title: title,
+                    content: ele,
+                    btn: ['提交', '重置', '取消'],
+                    yes: function (index, layero) {
+                        layero.find('form').find('button').trigger('click');
+                        layero.find('form').data('layer-index', index);
+                    },
+                    btn2: function (index, layero) {
+                        layero.find('form')[0].reset()
+                        return false;
+                    },
+                    btn3: function (index, layero) {
+                        layer.close(index);
+                    },
+                    success: function (layero, index) {
+                        layero.find('form')[0].reset();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

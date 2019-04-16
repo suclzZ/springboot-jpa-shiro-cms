@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>后台管理系统</title>
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/static/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/static/css/admin.css" />
+</head>
+
+<body>
+<div class="page-content-wrap">
+  <div class="layui-row">
+      <div class="layui-col-xs5 layui-col-sm4 layui-col-md3 " id="tree_menu">
+      </div>
+      <div class="layui-col-xs5 layui-col-sm6 layui-col-md9">
+              <form class="layui-form layui-card-body" lay-filter="filter_form_add">
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">菜单编码</label>
+                      <div class="layui-input-block">
+                          <input type="text" name="menuCode" autocomplete="off" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">菜单名称</label>
+                      <div class="layui-input-block">
+                          <input type="text" name="menuName" lay-verify="required" placeholder="菜单名称" autocomplete="off"
+                              class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">上级菜单</label>
+                      <div class="layui-input-block">
+                          <input type="text" name="parentMenuCode" placeholder="上级菜单" autocomplete="off"
+                              class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">菜单样式</label>
+                      <div class="layui-input-block">
+                          <input type="text" name="style" placeholder="菜单样式" autocomplete="off"
+                              class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">子节点</label>
+                      <div class="layui-input-block">
+                          <input type="radio" name="leaf" value="1" title="是" checked="">
+                          <input type="radio" name="leaf" value="0" title="否">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">菜单路径</label>
+                      <div class="layui-input-block">
+                          <input type="text" name="path" placeholder="菜单路径" autocomplete="off"
+                              class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-input-block">
+                      <button class="layui-btn" lay-submit lay-filter="form_submit">提交</button>
+                      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                  </div>
+              </form>
+      </div>
+  </div>
+</div>
+<script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['layer','table','form','tree','app','tool'], function() {
+        var layer = layui.layer ,form = layui.form ,$=layui.$,tree = layui.tree,tool=layui.tool;
+
+        tool.http.ajax({
+            url:'/menu/tree',
+            method:'get',
+            success:function (res) {
+                layui.tree({
+                    elem: '#tree_menu', //传入元素选择器
+                    nodes: res.result,
+                    click:function (data) {
+                        fillForm(data.id);
+                    }
+                });
+            }
+        });
+        function fillForm(id) {
+            tool.http.ajax({
+                url:'/menu/'+id,
+                method:'get',
+                success:function (res) {
+                    form.val('filter_form_add',res.result);
+                }
+            });
+        }
+
+        form.on('submit(form_submit)',function (obj) {
+            tool.http.ajax({
+                url:'/menu',
+                data:data.field,
+                success:function(){
+                    tool.msg.ok('操作成功！');
+                }
+            })
+            return false;
+        })
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>后台登录</title>
+		<link rel="stylesheet" type="text/css" href="${request.contextPath}/static/layui/css/layui.css" />
+		<link rel="stylesheet" type="text/css" href="${request.contextPath}/static/css/login.css" />
+	</head>
+
+	<body>
+		<div class="m-login-bg">
+			<div class="m-login">
+				<h3>后台系统登录</h3>
+				<div class="m-login-warp">
+					<form class="layui-form" action="">
+						<div class="layui-form-item">
+							<input type="text" name="username" required lay-verify="username" placeholder="用户名/电话/邮箱" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-item">
+							<input type="text" name="password" required lay-verify="password" placeholder="密码" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<input type="text" name="verificationCode" required value="" lay-verify="verity" placeholder="验证码" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-inline">
+								<img class="verifyImg" onclick="this.src=this.src+'?c='+Math.random();" src="${request.contextPath}/captcha.jpg" />
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+								<input type="checkbox" name="rememberMe" lay-skin="primary" title="记住我">
+							</div>
+							<div class="layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-md-offset4">
+								<a href="javascript:;" class="" style="margin-top: 10px;display: grid;color: red;font-weight:500;">忘记密码？</a>
+							</div>
+						</div>
+						<div class="layui-form-item m-login-btn">
+							<div class="layui-inline">
+								<button class="layui-btn layui-btn-normal" lay-submit lay-filter="login">登录</button>
+							</div>
+							<div class="layui-inline">
+								<button type="reset" class="layui-btn layui-btn-primary">取消</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script src="/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>-->
+		<script>
+			layui.config({
+				debug:true
+			}).use(['form','layer'], function() {
+				var form = layui.form,$ = layui.$,layer=layui.layer;
+
+				//自定义验证规则
+				// form.verify({
+				// 	username: function(value) {
+				// 		return (value == 'admin')?'':'用户名不正确！';
+				// 	},
+				// 	password: function (value) {
+				// 		return value == '123456'?'':'密码不正确！';
+				// 	},
+				// 	verity: [/(.+){6}$/, '验证码必须是6位'],
+				//
+				// });
+
+				//监听提交按钮
+				form.on('submit(login)', function(data) {
+                    $.ajax({
+						url:'/login.html',
+						method:'post',
+						dataType:'json',
+						data:data.field,
+						success:function (res) {
+							if(res && res.code=='9999'){
+                                layer.msg(res.info, {icon: 2,offset:'t'});
+                                return;
+                            }
+							window.location.href = '/index.html';
+                        }
+					})
+					return false;
+				});
+
+			});
+		</script>
+	</body>
+
+</html>

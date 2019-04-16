@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>后台管理系统</title>
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/static/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/static/css/admin.css" />
+</head>
+
+<body>
+<div id="content-role" class="page-content-wrap">
+    <div id="layer_add" class="layui-card" style="display: none">
+        <form class="layui-form layui-card-body" lay-filter="filter_form_add">
+            <div class="layui-form-item">
+                <label class="layui-form-label">角色编码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="roleCode" lay-verify="required" placeholder="角色编码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">角色名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="roleName" lay-verify="required" placeholder="角色名称" autocomplete="off"
+                        class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">角色描述</label>
+                <div class="layui-input-block">
+                    <textarea name="description" placeholder="角色描述" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-input-block layui-hide">
+                <button class="layui-btn" lay-submit lay-filter="form_submit"></button>
+                <!--<button id="btn_form_add_reset" type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+            </div>
+        </form>
+    </div>
+    <div id="layer_authc" class="layui-card" style="display: none">
+        <form class="layui-form layui-card-body" lay-filter="filter_form_authc">
+            <div class="layui-form-item">
+                <label class="layui-form-label">角色编码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="roleCode" readonly  placeholder="角色编码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">角色户名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="roleName" readonly  placeholder="角色户名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <fieldset class="layui-elem-field">
+                    <legend>菜单</legend>
+                    <div class="layui-field-box">
+                        <div class="layui-input-block" style="display: grid" id="field_menu">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="layui-input-block layui-hide">
+                <button class="layui-btn" lay-submit lay-filter="form_submit_authc"></button>
+            </div>
+        </form>
+    </div>
+    <div id="layer_perm" class="layui-card" style="display: none">
+        <form class="layui-form layui-card-body" lay-filter="filter_form_perm">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">角色编码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="roleCode" readonly  placeholder="角色编码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">角色户名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="roleName" readonly  placeholder="角色户名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <fieldset class="layui-elem-field">
+                    <legend>权限</legend>
+                    <div class="layui-field-box">
+                        <table class="layui-table" lay-data="{id:'table_perm'}" lay-filter="table_perm">
+                            <thead>
+                            <tr>
+                                <th lay-data="{field:'rpId', hide: true}">ID</th>
+                                <th lay-data="{field:'permission', edit: 'text',width:'100%',align:'center'}">权限</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="layui-input-block layui-hide">
+                <button class="layui-btn" lay-submit lay-filter="form_submit_authc"></button>
+            </div>
+        </form>
+    </div>
+    <div class="layui-form">
+        <!--<form class="layui-form">-->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <input type="text" name="roleName" operate="LIKE" lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+                </div>
+                <button class="layui-btn layui-btn-normal layui-btn-sm" data-method="search"><i class="layui-icon layui-icon-search"></i>搜索</button>
+            </div>
+        <!--</form>-->
+        <table id="table_role" lay-filter="filter_table_role" class="layui-table" lay-skin="line"></table>
+        <script type="text/html" id="toolbar">
+            <a class="layui-btn layui-btn-normal  layui-btn-sm" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加</a>
+        </script>
+        <script type="text/html" id="optbar">
+            <a class="layui-icon layui-icon-edit" lay-event="edit" title="修改"></a>
+            <a class="layui-icon layui-icon-delete" lay-event="del" title="删除"></a>
+            <a class="layui-icon layui-icon-auz" lay-event="authc" title="菜单配置"></a>
+            <a class="layui-icon layui-icon-auz" lay-event="perm" title="权限配置"></a>
+        </script>
+    </div>
+</div>
+<script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['layer','table','form','main','app','tool','atree'], function() {
+        var layer = layui.layer ,table =layui.table ,form = layui.form ,
+            $=layui.$,main = layui.main,app=layui.app,tool=layui.tool,atree=layui.atree;
+        var atree;
+        //列表加载数据
+        var tableIns = table.render({
+            elem:'#table_role',
+            toolbar:'#toolbar',
+            cols:[[
+                {type: 'checkbox', fixed: 'left'},
+                {field:'roleCode', title:'角色编码'},
+                {field:'roleName', title:'角色姓名'},
+                {field:'description', title:'角色描述'},
+                {toolbar:'#optbar', title:'操作'}
+            ]],
+            url:app.contextPath+'/role',
+            page:true,
+            limit:8,
+            limits:8,
+            request: {
+                pageName: 'pager:pageIndex', //页码的参数名称，默认：page
+                limitName: 'pager:pageSize' //每页数据量的参数名，默认：limit
+            },
+            response: {
+                // statusName: 'status', //规定数据状态的字段名称，默认：code
+                statusCode: 'OK', //规定成功的状态码，默认：0
+                // msgName: 'hint', //规定状态信息的字段名称，默认：msg
+                // countName: 'total', //规定数据总数的字段名称，默认：count
+                // dataName: 'rows', //规定数据列表的字段名称，默认：data
+            },
+            parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.info, //解析提示文本
+                    "count": res.result.total, //解析数据长度
+                    "data": res.result.result //解析数据列表
+                };
+            }
+        });
+        //工具栏
+        table.on('toolbar(filter_table_role)', function(obj){
+            switch(obj.event){
+                case 'add':
+                    openForm();
+                    break;
+            };
+        });
+        table.on('row(filter_table_role)', function(obj){
+            $(obj.tr).addClass('layui-table-selected').siblings().removeClass('layui-table-selected');
+        });
+        table.on('rowDouble(filter_table_role)', function(obj){
+            //obj 同上
+        });
+        //操作栏
+        table.on('tool(filter_table_role)', function(obj){
+            //obj.data、obj.event、obj.tr
+            var layEvent = obj.event;
+            if(layEvent === 'detail'){ //查看
+                //do somehing
+            } else if(layEvent === 'del'){ //删除
+                tool.msg.confirm('确定删除该条数据?', function(index){
+                    obj.del();
+                    layer.close(index);
+                    tool.http.ajax({
+                        url:'/role/'+obj.data.roleCode,
+                        method:'delete',
+                        success:function(){
+                            tool.msg.ok('删除成功！');
+                        }
+                    });
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                openForm();
+                form.val('filter_form_add',obj.data);
+            } else if(layEvent === 'authc'){
+                tool.http.ajax({
+                    url:'/role/'+obj.data.roleCode+'?initialize=menus',
+                    method:'get',
+                    success:function(res){
+                        openAuthcForm(function (atree) {
+                            var menus = res.result.menus || [];//如果没有加载出来，需要到后台重新查询
+                            var mids = menus.map(function (el) {
+                                return el.menuCode;
+                            })
+                            atree.checkItem(mids);
+                        });
+                        form.val('filter_form_authc',obj.data);
+                    }
+                })
+            }else if(layEvent === 'perm'){
+                tool.http.ajax({
+                    url:'/role/'+obj.data.roleCode+'?initialize=menus',
+                    method:'get',
+                    success:function(res){
+                        openPermForm();
+                    }
+                })
+                form.val('filter_form_perm',obj.data);
+            }
+        });
+
+        //按钮事件
+        var active = {
+            search:function(btn){
+                var conditions = [];
+                $(btn).parent().find('input').each(function(){
+                    conditions.push({property:$(this).attr('name'),value:$(this).val(),operate:$(this).attr('operate')})//
+                });
+                tableIns.reload({
+                    where:{_conditions:JSON.stringify(conditions)}
+                });
+            }
+        };
+        //data-method进行按钮绑定
+        $('#content-role .layui-btn').on('click', function(){
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+        //form
+        form.on('submit(form_submit)',function (data) {
+            tool.http.ajax({
+                url:'/role',
+                data:data.field,
+                success:function(){
+                    layer.close($(data.form).data('layer-index'));
+                    tableIns.reload();
+                    tool.msg.ok('操作成功！');
+                }
+            })
+            return false;
+        });
+        form.on('submit(form_submit_authc)',function (data) {
+            var menus = [];
+            atree.checkVal().forEach(function(item,i){
+                menus.push({menuCode:item.id});
+            })
+            $.extend(data.field,{menus:menus})
+            tool.http.ajax({
+                url:'/role/authc',
+                data:tool.object.param(data.field),
+                success:function(){
+                    layer.close($(data.form).data('layer-index'));
+                    tableIns.reload();
+                    tool.msg.ok('操作成功！');
+                }
+            })
+            return false;
+        });
+        function openForm(callback){
+            layer.open({
+                type: 1,
+                area: ['600px','350px'],
+                shade: 0.5,
+                maxmin:true,
+                fixed:true,
+                skin:'custom-layer-class',
+                offset: 'auto',
+                title:'角色',
+                content:$('#layer_add'),
+                btn:['提交','重置','取消'],
+                yes :function(index, layero){
+                    layero.find('form').find('button').trigger('click');
+                    layero.find('form').data('layer-index',index);
+                },
+                btn2:function (index, layero) {
+                    layero.find('form')[0].reset()
+                    return false;
+                },
+                btn3:function (index, layero) {
+                    layer.close(index);
+                },
+                success : function(layero, index){
+                    layero.find('form')[0].reset();
+                }
+            });
+        }
+        function openAuthcForm(callback){
+            tool.http.ajax({
+                url:'/menu/tree',
+                method:'get',
+                success:function (res) {
+                    atree = layui.atree({
+                        elem: '#field_menu', //指定元素
+                        check: 'checkbox', //勾选风格
+                        skin: 'as', //设定皮肤
+                        spreadAll:true,
+                        props:{
+                            // addBtnLabel:'新增',
+                            // deleteBtnLabel:'删除',
+                            name: 'name',
+                            id: 'id',
+                            children:'children',
+                            checkbox:'checkbox',
+                            spread:'spread'
+                        },
+                        change:function(val){
+                        },
+                        click: function(item) { //点击节点回调
+                        },
+                        nodes:res.result
+                    });
+                    callback.call(this,atree);
+                }
+            })
+
+            layer.open({
+                type: 1,
+                area: ['600px','500px'],
+                shade: 0.5,
+                maxmin:true,
+                fixed:true,
+                skin:'custom-layer-class',
+                offset: 'auto',
+                title:'授权',
+                content:$('#layer_authc'),
+                btn:['提交','取消'],
+                yes :function(index, layero){
+                    layero.find('form').find('button').trigger('click');
+                    layero.find('form').data('layer-index',index);
+                },
+                btn2:function (index, layero) {
+                    layer.close(index);
+                },
+                success : function(layero, index){
+                    layero.find('form')[0].reset();
+                }
+            });
+        }
+        function openPermForm(callback){
+            var roleCode = $('#layer_perm').find('input[name="roleCode"]').val();
+            table.reload('table_perm', {
+                url: app.contextPath+'/role/perm/'+roleCode,
+                page:false,
+                response: {
+                    statusCode: 'OK'
+                },
+                parseData: function(res){
+                    return {
+                        "code": res.status,
+                        "data": res.result
+                    };
+                }
+            })
+            layer.open({
+                type: 1,
+                area: ['650px','500px'],
+                shade: 0.5,
+                maxmin:true,
+                fixed:true,
+                skin:'custom-layer-class',
+                offset: 'auto',
+                title:'权限',
+                content:$('#layer_perm'),
+                btn:['提交','取消'],
+                yes :function(index, layero){
+                    layero.find('form').find('button').trigger('click');
+                    layero.find('form').data('layer-index',index);
+                },
+                btn3:function (index, layero) {
+                    layer.close(index);
+                }
+            });
+        }
+    });
+</script>
+</body>
+
+</html>

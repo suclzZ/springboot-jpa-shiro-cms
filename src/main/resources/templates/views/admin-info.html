@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="renderer" content="webkit">
+  		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>后台管理系统</title>
+		<link rel="stylesheet" type="text/css" href="${request.contextPath}/static/layui/css/layui.css"/>
+		<link rel="stylesheet" type="text/css" href="${request.contextPath}/static/css/admin.css"/>
+	</head>
+	<body>
+		<div class="layui-tab page-content-wrap">
+		  <ul class="layui-tab-title">
+		    <li class="layui-this">修改资料</li>
+		    <li>修改密码</li>
+		  </ul>
+		  <div class="layui-tab-content">
+		    <div class="layui-tab-item layui-show">
+				<form class="layui-form layui-card-body" lay-filter="filter_form_add" style="width: 90%;padding-top: 20px;">
+					<div class="layui-form-item layui-hide">
+						<label class="layui-form-label">ID</label>
+						<div class="layui-input-block">
+							<input type="text" name="userId" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">登录名</label>
+						<div class="layui-input-block">
+							<input type="text" name="username" disabled lay-verify="required"  autocomplete="off" class="layui-input layui-disabled">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">用户名</label>
+						<div class="layui-input-block">
+							<input type="text" name="userCaption"  lay-verify="required"  autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-hide">
+						<div class="layui-input-block">
+							<input type="password" name="password" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">年龄</label>
+						<div class="layui-input-block">
+							<input type="text" name="age"  lay-verify="number" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">性别</label>
+						<div class="layui-input-block">
+							<input type="radio" name="sex" value="1" title="男" checked="">
+							<input type="radio" name="sex" value="0" title="女">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">生日</label>
+						<div class="layui-input-block">
+							<input type="text" name="birthday"  autocomplete="off" class="layui-input layui-date">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">电话号码</label>
+						<div class="layui-input-block">
+							<input type="text" name="telephone"  autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">邮箱</label>
+						<div class="layui-input-block">
+							<input type="text" name="email"  autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">地址</label>
+						<div class="layui-input-block">
+							<input type="text" name="address"   autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-form-text">
+						<label class="layui-form-label">描述</label>
+						<div class="layui-input-block">
+							<textarea name="description" class="layui-textarea"></textarea>
+						</div>
+					</div>
+					<div class="layui-input-block">
+						<button class="layui-btn" lay-submit lay-filter="form_submit">提交</button>
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</form>
+		    </div>
+		    <div class="layui-tab-item">
+		    	<form id="form_repasswd" class="layui-form" lay-filter="filter_form_repasswd" style="width: 90%;padding-top: 20px;">
+				  <div class="layui-form-item layui-hide">
+					<label class="layui-form-label">ID</label>
+					<div class="layui-input-block">
+						<input type="text" name="userId" autocomplete="off" class="layui-input">
+					</div>
+				  </div>
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">用户名：</label>
+				    <div class="layui-input-block">
+				      <input type="text" name="username" disabled autocomplete="off" class="layui-input layui-disabled" value="admin">
+				    </div>
+				  </div>
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">旧密码：</label>
+				    <div class="layui-input-block">
+				      <input type="password" name="oldPassword" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				    </div>
+				  </div>
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">新密码：</label>
+				    <div class="layui-input-block">
+				      <input type="password" name="newPassword" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				    </div>
+				  </div>
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">重复密码：</label>
+				    <div class="layui-input-block">
+				      <input type="password" name="rePassword" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				    </div>
+				  </div>
+				  <div class="layui-form-item">
+				    <div class="layui-input-block">
+				      <button class="layui-btn layui-btn-normal" lay-submit lay-filter="adminPassword">立即提交</button>
+				    </div>
+				  </div>
+				</form>
+		    </div>
+		  </div>
+		</div>
+	<script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
+	<script>
+        layui.use(['layer','table','form','main','app','tool'], function() {
+            var layer = layui.layer, table = layui.table, form = layui.form, $ = layui.$, main = layui.main,
+                app = layui.app, tool = layui.tool;
+            tool.http.ajax({
+				url:'/user/current',
+				method:'get',
+				success:function(res){
+                    form.val('filter_form_add',res.result);
+                    form.val('filter_form_repasswd',res.result);
+				}
+			});
+            form.on('submit(form_submit)',function (data) {
+                tool.http.ajax({
+                    url:'/user',
+                    data:data.field,
+                    success:function(){
+                        tool.msg.ok('操作成功！');
+                    }
+                })
+                return false;
+            });
+            form.on('submit(adminPassword)',function (data) {
+                var oldPassword = $('#form_repasswd').find('input[name=oldPassword]').val(),
+					newPassword = $('#form_repasswd').find('input[name=newPassword]').val(),
+					rePassword = $('#form_repasswd').find('input[name=rePassword]').val();
+                tool.http.ajax({
+                    url:'/user/resetpasswd',
+					async:false,
+                    data:{userId:data.field.userId,oldPassword:oldPassword,newPassword:newPassword,rePassword:rePassword},
+                    success:function(){
+                        tool.msg.ok('操作成功！');
+                    }
+                })
+                return false;
+            });
+        });
+	</script>
+	</body>
+</html>

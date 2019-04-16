@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>后台管理系统</title>
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/static/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/static/css/admin.css" />
+</head>
+
+<body>
+<div id="content-rperm" class="page-content-wrap">
+    <div id="layer_add" class="layui-card" style="display: none">
+    <form class="layui-form layui-card-body" lay-filter="filter_form_add">
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">ID</label>
+            <div class="layui-input-block">
+                <input type="text" name="rpId" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">权限</label>
+            <div class="layui-input-block">
+                <input type="text" name="permission"  lay-verify="required" placeholder="权限" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+    </div>
+    <div class="layui-form">
+        <!--<form class="layui-form">-->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <input type="text" operate="LIKE" name="rpermCaption" lay-verify="required" placeholder="请输入模块类型" autocomplete="off" class="layui-input">
+                </div>
+                <button class="layui-btn layui-btn-normal layui-btn-sm" data-method="search"><i class="layui-icon layui-icon-search"></i>搜索</button>
+            </div>
+        <!--</form>-->
+        <table id="table_rperm" lay-filter="filter_table_rperm" class="layui-table" lay-skin="line">
+        </table>
+        <script type="text/html" id="toolbar">
+            <a class="layui-btn layui-btn-normal  layui-btn-sm" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加</a>
+            <!--<a class="layui-btn layui-btn-normal  layui-btn-sm" lay-event="authc"><i class="layui-icon layui-icon-auz"></i>授权</a>-->
+        </script>
+        <script type="text/html" id="optbar">
+            <a class="layui-icon layui-icon-edit" lay-event="edit" title="修改"></a>
+            <a class="layui-icon layui-icon-delete" lay-event="del" title="删除"></a>
+        </script>
+    </div>
+</div>
+<script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['layer','table','form','main','app','tool'], function() {
+        var layer = layui.layer ,table =layui.table ,form = layui.form ,$=layui.$,main = layui.main,app=layui.app,tool=layui.tool;
+
+        //列表加载数据
+        var tableIns = table.render({
+            id:'table_rperm',
+            elem:'#table_rperm',
+            toolbar:'#toolbar',
+            cols:[[
+                {type: 'checkbox', fixed: 'left'},
+                {field:'rpermId', title:'ID', width:100,hide:true},
+                {field:'rpermname', title:'登录名', width:200},
+                {field:'rpermCaption', title:'用户名', width:200},
+                {field:'age', title:'年龄', width:100},
+                {field:'sex', title:'性别', width:100},
+                {field:'telephone', title:'电话', width:150},
+                {field:'address', title:'地址', width:200},
+                {toolbar:'#optbar', title:'操作'}
+            ]],
+            url:app.contextPath+'/rperm',
+            page:true,
+            limit:8,
+            request: {
+                pageName: 'pager:pageIndex', //页码的参数名称，默认：page
+                limitName: 'pager:pageSize' //每页数据量的参数名，默认：limit
+            },
+            response: {
+                // statusName: 'status', //规定数据状态的字段名称，默认：code
+                statusCode: 'OK', //规定成功的状态码，默认：0
+                // msgName: 'hint', //规定状态信息的字段名称，默认：msg
+                // countName: 'total', //规定数据总数的字段名称，默认：count
+                // dataName: 'rows', //规定数据列表的字段名称，默认：data
+            },
+            parseData: function(res){ //res 即为原始返回的数据
+                if(res.code  == '9999'){
+                    tool.msg.err(res.info);return
+                }
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.info, //解析提示文本
+                    "count": res.result.total, //解析数据长度
+                    "data": res.result.result //解析数据列表
+                };
+            }
+        });
+        //工具栏
+        table.on('toolbar(filter_table_rperm)', function(obj){
+            switch(obj.event){
+                case 'add':
+                    openForm();
+                    break;
+                case 'authc':
+                    var checkStatus = table.checkStatus('table_rperm');
+                    console.log(checkStatus.data)
+                    openAuthcForm();
+            };
+        });
+        //行点击
+        table.on('row(filter_table_rperm)', function(obj){
+            //obj.tr、obj.data obj.del(); obj.update(fields)
+            $(obj.tr).addClass('layui-table-selected').siblings().removeClass('layui-table-selected');
+        });
+        //操作栏
+        table.on('tool(filter_table_rperm)', function(obj){
+            //obj.data、obj.event、obj.tr
+            var layEvent = obj.event;
+            if(layEvent === 'detail'){ //查看
+            } else if(layEvent === 'del'){ //删除
+                tool.msg.confirm('确定删除该条数据?', function(index){
+                    obj.del();
+                    layer.close(index);
+                    tool.http.ajax({
+                        url:'/rperm/'+obj.data.rpermId,
+                        method:'delete',
+                        success:function(){
+                            tool.msg.ok('删除成功！');
+                        }
+                    });
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                openForm();
+                form.val('filter_form_add',obj.data);
+            }
+        });
+
+        //按钮事件
+        var active = {
+            search:function(btn){
+                var conditions = [];
+                $(btn).parent().find('input').each(function(){
+                    conditions.push({property:$(this).attr('name'),value:$(this).val(),operate:$(this).attr('operate')})//
+                });
+                tableIns.reload({
+                    where:{_conditions:JSON.stringify(conditions)}
+                });
+            }
+        };
+        //data-method进行按钮绑定
+        $('#content-rperm .layui-btn').on('click', function(){
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+        //form
+        form.on('submit(form_submit)',function (data) {
+            tool.http.ajax({
+                url:'/rperm',
+                data:data.field,
+                success:function(){
+                    layer.close($(data.form).data('layer-index'));
+                    tableIns.reload();
+                    tool.msg.ok('操作成功！');
+                }
+            })
+            return false;
+        });
+        function openForm(callback){
+            layer.open({
+                type: 1,
+                area: ['600px','500px'],
+                shade: 0.5,
+                maxmin:true,
+                fixed:true,
+                skin:'custom-layer-class',
+                offset: 'auto',
+                title:'用户',
+                content:$('#layer_add'),
+                btn:['提交','重置','取消'],
+                yes :function(index, layero){
+                    layero.find('form').find('button').trigger('click');
+                    layero.find('form').data('layer-index',index);
+                },
+                btn2:function (index, layero) {
+                    layero.find('form')[0].reset()
+                    return false;
+                },
+                btn3:function (index, layero) {
+                    layer.close(index);
+                },
+                success : function(layero, index){
+                    //form.render(null, 'test1'); // 重置
+                    layero.find('form')[0].reset();
+                }
+            });
+        }
+    });
+</script>
+</body>
+
+</html>
