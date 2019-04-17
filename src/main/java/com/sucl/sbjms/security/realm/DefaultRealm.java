@@ -1,6 +1,6 @@
 package com.sucl.sbjms.security.realm;
 
-import com.sucl.sbjms.security.IUser;
+import com.sucl.sbjms.security.auth.IUser;
 import com.sucl.sbjms.security.service.PrincipalService;
 import com.sucl.sbjms.security.service.TokenCheckService;
 import com.sucl.sbjms.security.token.UserToken;

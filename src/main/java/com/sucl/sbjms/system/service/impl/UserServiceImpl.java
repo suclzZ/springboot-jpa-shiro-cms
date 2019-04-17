@@ -1,14 +1,12 @@
 package com.sucl.sbjms.system.service.impl;
 
-import com.sucl.sbjms.core.method.support.ConditionHandlerMethodArgumentResolver;
 import com.sucl.sbjms.core.orm.Condition;
-import com.sucl.sbjms.core.orm.Domain;
 import com.sucl.sbjms.core.orm.jpa.JpaCondition;
 import com.sucl.sbjms.core.service.impl.BaseServiceImpl;
-import com.sucl.sbjms.security.GenericAccount;
-import com.sucl.sbjms.security.IUser;
+import com.sucl.sbjms.security.auth.GenericAccount;
+import com.sucl.sbjms.security.auth.IUser;
 import com.sucl.sbjms.security.annotation.Principal;
-import com.sucl.sbjms.security.service.PrincipalAdapter;
+import com.sucl.sbjms.security.auth.PrincipalAdapter;
 import com.sucl.sbjms.security.token.DefaultToken;
 import com.sucl.sbjms.security.token.UserToken;
 import com.sucl.sbjms.system.dao.UserDao;
@@ -17,21 +15,17 @@ import com.sucl.sbjms.system.entity.UserAccount;
 import com.sucl.sbjms.system.service.UserService;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.authc.pam.UnsupportedTokenException;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.Id;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**

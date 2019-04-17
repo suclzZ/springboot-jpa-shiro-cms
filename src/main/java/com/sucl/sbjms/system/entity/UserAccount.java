@@ -1,7 +1,6 @@
 package com.sucl.sbjms.system.entity;
 
-import com.sucl.sbjms.security.AbstractGenericAccount;
-import com.sucl.sbjms.security.IUser;
+import com.sucl.sbjms.security.auth.AbstractGenericAccount;
 
 /**
  * @author sucl

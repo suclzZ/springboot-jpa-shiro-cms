@@ -1,10 +1,10 @@
-package com.sucl.sbjms.security.service;
+package com.sucl.sbjms.security.token;
 
 /**
  * @author sucl
  * @date 2019/4/16
  */
-public interface VerifyCodeAble {
+public interface VerifiedCodeAble {
 
     boolean verify();
 }

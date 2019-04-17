@@ -1,7 +1,6 @@
 package com.sucl.sbjms.security.util;
 
-import com.sucl.sbjms.core.rem.BusException;
-import com.sucl.sbjms.security.IUser;
+import com.sucl.sbjms.security.auth.IUser;
 import org.apache.shiro.SecurityUtils;
 
 import java.util.Set;

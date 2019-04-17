@@ -3,7 +3,7 @@ package com.sucl.sbjms.system.web;
 import com.sucl.sbjms.core.rem.BusException;
 import com.sucl.sbjms.core.service.PasswordService;
 import com.sucl.sbjms.core.web.BaseController;
-import com.sucl.sbjms.security.IUser;
+import com.sucl.sbjms.security.auth.IUser;
 import com.sucl.sbjms.system.entity.Role;
 import com.sucl.sbjms.system.entity.User;
 import com.sucl.sbjms.system.service.UserService;

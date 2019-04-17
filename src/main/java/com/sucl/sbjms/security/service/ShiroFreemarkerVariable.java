@@ -1,4 +1,4 @@
-package com.sucl.sbjms.security;
+package com.sucl.sbjms.security.service;
 
 import com.sucl.sbjms.core.service.FreemarkerVariable;
 import com.sucl.sbjms.security.permission.ShiroTag;

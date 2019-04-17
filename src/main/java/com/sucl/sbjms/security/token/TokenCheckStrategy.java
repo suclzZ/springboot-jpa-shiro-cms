@@ -1,4 +1,4 @@
-package com.sucl.sbjms.security.service;
+package com.sucl.sbjms.security.token;
 
 import com.sucl.sbjms.security.token.UserToken;
 import org.springframework.core.PriorityOrdered;

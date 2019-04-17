@@ -1,6 +1,5 @@
 package com.sucl.sbjms.security.token;
 
-import com.sucl.sbjms.security.service.VerifyCodeAble;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -13,7 +12,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
  */
 @Getter
 @Setter
-public class DefaultToken extends UsernamePasswordToken implements UserToken,VerifyCodeAble {
+public class DefaultToken extends UsernamePasswordToken implements UserToken,VerifiedCodeAble {
     private boolean verification;
 
     public DefaultToken(String username,String password,boolean rememberMe,String host){

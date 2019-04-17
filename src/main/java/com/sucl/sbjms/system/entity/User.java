@@ -1,10 +1,9 @@
 package com.sucl.sbjms.system.entity;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sucl.sbjms.core.orm.Domain;
-import com.sucl.sbjms.security.IUser;
+import com.sucl.sbjms.security.auth.IUser;
 import com.sucl.sbjms.security.annotation.Principal;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;

@@ -1,4 +1,4 @@
-package com.sucl.sbjms.security;
+package com.sucl.sbjms.security.auth;
 
 import lombok.Data;
 import org.apache.shiro.authc.AuthenticationInfo;

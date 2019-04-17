@@ -1,7 +1,7 @@
-package com.sucl.sbjms.security.service;
+package com.sucl.sbjms.security.auth;
 
-import com.sucl.sbjms.security.GenericAccount;
-import com.sucl.sbjms.security.IUser;
+import com.sucl.sbjms.security.auth.GenericAccount;
+import com.sucl.sbjms.security.auth.IUser;
 import com.sucl.sbjms.security.token.UserToken;
 import org.springframework.core.PriorityOrdered;
 
@@ -11,9 +11,9 @@ import org.springframework.core.PriorityOrdered;
  */
 public interface PrincipalAdapter<U extends IUser,UT extends UserToken> extends PriorityOrdered {
 
-    boolean support(com.sucl.sbjms.security.IUser user);
+    boolean support(IUser user);
 
-    GenericAccount getGenericAccount(com.sucl.sbjms.security.IUser user);
+    GenericAccount getGenericAccount(IUser user);
 
     boolean support(com.sucl.sbjms.security.token.UserToken token);
 

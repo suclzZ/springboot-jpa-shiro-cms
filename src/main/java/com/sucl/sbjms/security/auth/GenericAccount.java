@@ -1,4 +1,4 @@
-package com.sucl.sbjms.security;
+package com.sucl.sbjms.security.auth;
 
 import org.apache.shiro.authc.Account;
 import org.apache.shiro.authc.MergableAuthenticationInfo;

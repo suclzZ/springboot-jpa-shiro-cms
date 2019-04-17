@@ -1,5 +1,6 @@
 package com.sucl.sbjms.security.service;
 
+import com.sucl.sbjms.security.token.TokenCheckStrategy;
 import com.sucl.sbjms.security.token.UserToken;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.BeansException;

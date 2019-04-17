@@ -1,8 +1,9 @@
 package com.sucl.sbjms.security.service;
 
 
-import com.sucl.sbjms.security.GenericAccount;
-import com.sucl.sbjms.security.IUser;
+import com.sucl.sbjms.security.auth.GenericAccount;
+import com.sucl.sbjms.security.auth.IUser;
+import com.sucl.sbjms.security.auth.PrincipalAdapter;
 import com.sucl.sbjms.security.token.UserToken;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.BeansException;
