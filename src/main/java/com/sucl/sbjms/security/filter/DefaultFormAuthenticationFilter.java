@@ -6,6 +6,7 @@ import com.sucl.sbjms.security.Constant;
 import com.sucl.sbjms.security.token.DefaultToken;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.pam.UnsupportedTokenException;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.springframework.stereotype.Component;
@@ -69,8 +70,22 @@ public class DefaultFormAuthenticationFilter extends FormAuthenticationFilter {
     }
 
     @Override
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        configSession(request,response);
+        return super.isAccessAllowed(request, response, mappedValue) || getSubject(request, response).isRemembered();
+    }
+
+    protected void configSession(ServletRequest request,ServletResponse response){
+        HttpSession session = ((HttpServletRequest) request).getSession();
+        Object principal = getSubject(request, response).getPrincipal();
+        if(principal!=null){
+            session.setAttribute("username",principal.toString());
+        }
+    }
+
+    @Override
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
-        ((HttpServletRequest)request).getSession().setAttribute("user",subject.getPrincipal());
+        configSession(request,response);
         String loginType = getLoginType(request);
         if(LOGIN_TYPE_AJAX.equals(loginType)){
             try(ServletOutputStream out = response.getOutputStream()){

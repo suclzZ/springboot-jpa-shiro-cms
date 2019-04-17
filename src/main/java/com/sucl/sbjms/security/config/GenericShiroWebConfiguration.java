@@ -154,7 +154,7 @@ public class GenericShiroWebConfiguration extends AbstractShiroWebConfiguration 
         filterChainMap.put("/static/**", DefaultFilter.anon.name());
         filterChainMap.put("/captcha.jpg", DefaultFilter.anon.name());
         filterChainMap.put("/logout", DefaultFilter.logout.name());
-        filterChainMap.put("/**", DefaultFilter.authc.name());
+        filterChainMap.put("/**", "formAuthc");
         chainDefinition.addPathDefinitions(filterChainMap);
         return chainDefinition;
     }

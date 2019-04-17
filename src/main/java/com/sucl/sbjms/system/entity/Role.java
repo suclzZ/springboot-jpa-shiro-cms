@@ -36,4 +36,13 @@ public class Role implements Domain {
             joinColumns = @JoinColumn(name = "role_code"),
             inverseJoinColumns = @JoinColumn(name = "rp_id"))
     private List<Rperm> perms;
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "roleCode='" + roleCode + '\'' +
+                ", roleName='" + roleName + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

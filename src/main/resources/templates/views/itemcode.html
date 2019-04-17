@@ -130,11 +130,11 @@
     <script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
     <script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
     <script>
-        layui.use(['layer', 'table', 'form','tool','app'], function () {
+        layui.use(['layer', 'table', 'form','tool'], function () {
             var layer = layui.layer,
                 table = layui.table,
                 form = layui.form,
-                $ = layui.$,tool=layui.tool,app=layui.app;
+                $ = layui.$,tool=layui.tool;
 
             //列表加载数据
             var tableIns1 = table.render({
@@ -169,7 +169,7 @@
                         }
                     ]
                 ],
-                url: app.contextPath+'/codegroup',
+                url: layui.contextPath+'/codegroup',
                 page: true,
                 limit: 8,
                 limits: 8,
@@ -275,7 +275,7 @@
                 tableIns1.selectTr = obj.data.groupId;//关联主键
                 $(obj.tr).addClass('layui-table-selected').siblings().removeClass('layui-table-selected');
                 table.reload('table_codeitem', {
-                    url: app.contextPath+'/codeitem',
+                    url: layui.contextPath+'/codeitem',
                     where:{'codegroup.groupId':obj.data.groupId}
                 })
             });

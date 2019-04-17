@@ -134,9 +134,9 @@
 	<script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
 	<script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
 	<script>
-        layui.use(['layer','table','form','main','app','tool'], function() {
+        layui.use(['layer','table','form','main','tool'], function() {
             var layer = layui.layer, table = layui.table, form = layui.form, $ = layui.$, main = layui.main,
-                app = layui.app, tool = layui.tool;
+                tool = layui.tool;
             tool.http.ajax({
 				url:'/user/current',
 				method:'get',

@@ -26,7 +26,7 @@ layui.define([ 'form', 'element','laydate'], function(exports) {
     }
 
     Tab.prototype.content = function(src,id) {
-        src = (src.indexOf("/")==0)?src:('/views/'+src);
+        src = (src.indexOf("/")==0)?src:('views/'+src);
         var iframe = document.createElement("iframe"),id = id ||src.substring(0,src.indexOf('.html'));
         iframe.setAttribute("frameborder", "0");
         iframe.setAttribute("src", src);
@@ -122,8 +122,8 @@ layui.define([ 'form', 'element','laydate'], function(exports) {
             mainLayout.removeClass('hide-side');
         })
         function tabSelect(elem){
-            let navA = $(elem).is('a')?$(elem): $(elem).find('a');
-            let id = navA.attr('data-id'), url = navA.attr('data-url'), text = navA.attr('data-text');
+            var navA = $(elem).is('a')?$(elem): $(elem).find('a');
+            var id = navA.attr('data-id'), url = navA.attr('data-url'), text = navA.attr('data-text');
             id && (window.location.hash = '#' + id);
             if( url && url!=='javascript:;' ){
                 if(tabs.is(id)){//

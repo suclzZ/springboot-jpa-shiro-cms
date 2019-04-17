@@ -94,4 +94,9 @@ public class User implements Domain,IUser {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return this.userCaption;
+    }
 }

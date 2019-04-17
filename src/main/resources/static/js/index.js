@@ -12,9 +12,7 @@
         //设置别名
         app = {
             // main : 'main',
-            // dialog :'dialog',
             // menu : 'menu',
-            app:'../app'
         };
 
     (function(){
@@ -28,17 +26,21 @@
         }
         // doHashchange();
 
+
         var dataMain, scripts = document.getElementsByTagName('script'),
             eachScripts = function(el){
                 dataMain = el.getAttribute('data-main');
+                indexSrc = el.getAttribute('src');
                 if(dataMain){
+                    layui._base = indexSrc.substring(0,indexSrc.lastIndexOf("/"));
                     entry = dataMain;
                 }
             };
         [].slice.call(scripts).forEach(eachScripts);
     })();
 
+    layui.contextPath = layui._base.replace('/static/js','');
     layui.config({
-        base: '/static/js/module/'
+        base: layui._base+'/module/'
     }).extend(app).use(entry);
 })();

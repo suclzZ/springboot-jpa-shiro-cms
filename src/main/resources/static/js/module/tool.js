@@ -1,5 +1,5 @@
-layui.define(['layer','app'], function (exports) {
-    var $ = layui.$,layer = layui.layer,app = layui.app,
+layui.define(['layer'], function (exports) {
+    var $ = layui.$,layer = layui.layer,
         tool = {
             array:{
                 /**
@@ -116,10 +116,9 @@ layui.define(['layer','app'], function (exports) {
                     if(options.notShowLoading!=true){
                         that._showLoading(0,options.loadingText);//
                     }
-                    var contextPath = app.contextPath;
-                    if(contextPath&&options.url.substring(0,1)=='/'
-                        &&options.url.indexOf(contextPath)==-1){
-                        options.url = contextPath+options.url.substring(1);
+                    var contextPath = layui.contextPath;
+                    if(contextPath && options.url.substring(0,1)=='/' && options.url.indexOf(contextPath)==-1){
+                        options.url = contextPath+options.url;
                     }
 
                     var _options = $.extend({},{

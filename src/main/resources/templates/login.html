@@ -71,7 +71,7 @@
 				//监听提交按钮
 				form.on('submit(login)', function(data) {
                     $.ajax({
-						url:'/login.html',
+						url:'login.html',
 						method:'post',
 						dataType:'json',
 						data:data.field,
@@ -80,7 +80,7 @@
                                 layer.msg(res.info, {icon: 2,offset:'t'});
                                 return;
                             }
-							window.location.href = '/index.html';
+							window.location.href = 'index.html';
                         }
 					})
 					return false;

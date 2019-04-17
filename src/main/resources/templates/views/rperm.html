@@ -52,8 +52,8 @@
 <script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
 <script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
 <script>
-    layui.use(['layer','table','form','main','app','tool'], function() {
-        var layer = layui.layer ,table =layui.table ,form = layui.form ,$=layui.$,main = layui.main,app=layui.app,tool=layui.tool;
+    layui.use(['layer','table','form','main','tool'], function() {
+        var layer = layui.layer ,table =layui.table ,form = layui.form ,$=layui.$,main = layui.main,tool=layui.tool;
 
         //列表加载数据
         var tableIns = table.render({
@@ -71,7 +71,7 @@
                 {field:'address', title:'地址', width:200},
                 {toolbar:'#optbar', title:'操作'}
             ]],
-            url:app.contextPath+'/rperm',
+            url:layui.contextPath+'/rperm',
             page:true,
             limit:8,
             request: {

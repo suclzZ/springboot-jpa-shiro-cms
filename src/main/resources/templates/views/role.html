@@ -127,12 +127,12 @@
 <script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
 <script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
 <script>
-    layui.use(['layer','table','form','main','app','tool','atree'], function() {
-        var layer = layui.layer ,table =layui.table ,form = layui.form ,
-            $=layui.$,main = layui.main,app=layui.app,tool=layui.tool,atree=layui.atree;
+    layui.use(['layer','table','form','main','tool','atree','tabled'], function() {
+        var layer = layui.layer ,table =layui.table ,form = layui.form ,tabled = layui.tabled,
+            $=layui.$,main = layui.main,tool=layui.tool,atree=layui.atree;
         var atree;
         //列表加载数据
-        var tableIns = table.render({
+        var tableIns = tabled.render({
             elem:'#table_role',
             toolbar:'#toolbar',
             cols:[[
@@ -142,29 +142,28 @@
                 {field:'description', title:'角色描述'},
                 {toolbar:'#optbar', title:'操作'}
             ]],
-            url:app.contextPath+'/role',
-            page:true,
-            limit:8,
-            limits:8,
-            request: {
-                pageName: 'pager:pageIndex', //页码的参数名称，默认：page
-                limitName: 'pager:pageSize' //每页数据量的参数名，默认：limit
-            },
-            response: {
-                // statusName: 'status', //规定数据状态的字段名称，默认：code
-                statusCode: 'OK', //规定成功的状态码，默认：0
-                // msgName: 'hint', //规定状态信息的字段名称，默认：msg
-                // countName: 'total', //规定数据总数的字段名称，默认：count
-                // dataName: 'rows', //规定数据列表的字段名称，默认：data
-            },
-            parseData: function(res){ //res 即为原始返回的数据
-                return {
-                    "code": res.status, //解析接口状态
-                    "msg": res.info, //解析提示文本
-                    "count": res.result.total, //解析数据长度
-                    "data": res.result.result //解析数据列表
-                };
-            }
+            url:layui.contextPath+'/role',
+            // page:true,
+            // limit:8,
+            // request: {
+            //     pageName: 'pager:pageIndex', //页码的参数名称，默认：page
+            //     limitName: 'pager:pageSize' //每页数据量的参数名，默认：limit
+            // },
+            // response: {
+            //     // statusName: 'status', //规定数据状态的字段名称，默认：code
+            //     statusCode: 'OK', //规定成功的状态码，默认：0
+            //     // msgName: 'hint', //规定状态信息的字段名称，默认：msg
+            //     // countName: 'total', //规定数据总数的字段名称，默认：count
+            //     // dataName: 'rows', //规定数据列表的字段名称，默认：data
+            // },
+            // parseData: function(res){ //res 即为原始返回的数据
+            //     return {
+            //         "code": res.status, //解析接口状态
+            //         "msg": res.info, //解析提示文本
+            //         "count": res.result.total, //解析数据长度
+            //         "data": res.result.result //解析数据列表
+            //     };
+            // }
         });
         //工具栏
         table.on('toolbar(filter_table_role)', function(obj){
@@ -358,7 +357,7 @@
         function openPermForm(callback){
             var roleCode = $('#layer_perm').find('input[name="roleCode"]').val();
             table.reload('table_perm', {
-                url: app.contextPath+'/role/perm/'+roleCode,
+                url: layui.contextPath+'/role/perm/'+roleCode,
                 page:false,
                 response: {
                     statusCode: 'OK'
