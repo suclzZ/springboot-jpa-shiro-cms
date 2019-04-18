@@ -91,13 +91,13 @@ layui.define(['layer'], function (exports) {
                     layer.alert(info);
                 },
                 ok:function (info) {
-                    layer.msg(info,{icon:1,offset: 't',time:0,closeBtn:1});
+                    layer.msg(info,{icon:1,offset: 't',time:10000,closeBtn:1});
                 },
                 warn:function (info) {
-                    layer.msg(info,{icon:7,offset: 't',time:0,closeBtn:1});
+                    layer.msg(info,{icon:7,offset: 't',time:10000,closeBtn:1});
                 },
                 err:function (info) {
-                    layer.msg(info,{icon:2,offset: 't',time:0,closeBtn:1});
+                    layer.msg(info,{icon:2,offset: 't',time:10000,closeBtn:1});
                 },
                 confirm:function (info,callback) {
                     layer.confirm(info, {icon: 3, title:'提示'}, function(index){
