@@ -128,19 +128,6 @@
             </div>
         <!--</form>-->
         <table id="table_user" lay-filter="filter_table_user" class="layui-table" lay-skin="line">
-            <!--<thead>-->
-                <!--<tr>-->
-                    <!--<th lay-data="{type: 'checkbox', fixed: 'left'}"></th>-->
-                    <!--<th lay-data="{field:'userId', width:100,hide:true}">ID</th>-->
-                    <!--<th lay-data="{field:'username', width:200}">登录名</th>-->
-                    <!--<th lay-data="{field:'userCaption', width:200}">用户名</th>-->
-                    <!--<th lay-data="{field:'age',width:100}">年龄</th>-->
-                    <!--<th lay-data="{field:'sex', width:100}">性别</th>-->
-                    <!--<th lay-data="{field:'telephone', width:150}">电话</th>-->
-                    <!--<th lay-data="{field:'address', width:200}">地址</th>-->
-                    <!--<th lay-data="{toolbar:'#optbar'}">操作</th>-->
-                <!--</tr>-->
-            <!--</thead>-->
         </table>
         <script type="text/html" id="toolbar">
             <a class="layui-btn layui-btn-normal  layui-btn-sm" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加</a>
@@ -156,14 +143,14 @@
 <script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
 <script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
 <script>
-    layui.use(['layer','table','form','main','tool'], function() {
-        var layer = layui.layer ,table =layui.table ,form = layui.form ,$=layui.$,main = layui.main,tool=layui.tool;
+    layui.use(['layer','tabled','form','tool','dialog','select'], function() {
+        var layer = layui.layer ,table =layui.tabled ,form = layui.form ,
+            $=layui.$,tool=layui.tool,dialog=layui.dialog,select = layui.select;
 
         //列表加载数据
-        var tableIns = table.render({
-            id:'table_user',
+        table.render({
             elem:'#table_user',
-            toolbar:'#toolbar',
+            url:'/user',
             cols:[[
                 {type: 'checkbox', fixed: 'left'},
                 {field:'userId', title:'ID', width:100,hide:true},
@@ -174,50 +161,20 @@
                 {field:'telephone', title:'电话', width:150},
                 {field:'address', title:'地址', width:200},
                 {toolbar:'#optbar', title:'操作'}
-            ]],
-            url:layui.contextPath+'/user',
-            page:true,
-            limit:8,
-            request: {
-                pageName: 'pager:pageIndex', //页码的参数名称，默认：page
-                limitName: 'pager:pageSize' //每页数据量的参数名，默认：limit
-            },
-            response: {
-                // statusName: 'status', //规定数据状态的字段名称，默认：code
-                statusCode: 'OK', //规定成功的状态码，默认：0
-                // msgName: 'hint', //规定状态信息的字段名称，默认：msg
-                // countName: 'total', //规定数据总数的字段名称，默认：count
-                // dataName: 'rows', //规定数据列表的字段名称，默认：data
-            },
-            parseData: function(res){ //res 即为原始返回的数据
-                if(res.code  == '9999'){
-                    tool.msg.err(res.info);return
-                }
-                return {
-                    "code": res.status, //解析接口状态
-                    "msg": res.info, //解析提示文本
-                    "count": res.result.total, //解析数据长度
-                    "data": res.result.result //解析数据列表
-                };
-            }
+            ]]
         });
         //工具栏
         table.on('toolbar(filter_table_user)', function(obj){
             switch(obj.event){
-                case 'add':
-                    openForm();
-                    break;
-                case 'authc':
-                    var checkStatus = table.checkStatus('table_user');
-                    console.log(checkStatus.data)
-                    openAuthcForm();
+                case 'add': openForm(); break;
+                case 'authc': openAuthcForm(); break;
             };
         });
         //行点击
-        table.on('row(filter_table_user)', function(obj){
-            //obj.tr、obj.data obj.del(); obj.update(fields)
-            $(obj.tr).addClass('layui-table-selected').siblings().removeClass('layui-table-selected');
-        });
+        // table.on('row(filter_table_user)', function(obj){
+        //     //obj.tr、obj.data obj.del(); obj.update(fields)
+        //     $(obj.tr).addClass('layui-table-selected').siblings().removeClass('layui-table-selected');
+        // });
         table.on('rowDouble(filter_table_user)', function(obj){
             //obj 同上
         });
@@ -248,7 +205,7 @@
                     method:'get',
                     success:function(res){
                         form.val('filter_form_authc',res.result);
-                        var roleCodes = res.result.roles.map(r=>r.roleCode);
+                        var roleCodes = res.result.roles.map(function (r) { return r.roleCode });
                         $('#field_role').find('input').each(function(){
                             if(roleCodes.indexOf($(this).val())>-1){
                                 $(this).attr("checked", true);
@@ -266,7 +223,7 @@
                 $(btn).parent().find('input').each(function(){
                     conditions.push({property:$(this).attr('name'),value:$(this).val(),operate:$(this).attr('operate')})//
                 });
-                tableIns.reload({
+                table.reload('table_user',{
                     where:{_conditions:JSON.stringify(conditions)}
                 });
             }
@@ -283,7 +240,7 @@
                 data:data.field,
                 success:function(){
                     layer.close($(data.form).data('layer-index'));
-                    tableIns.reload();
+                    table.reload('table_user');
                     tool.msg.ok('操作成功！');
                 }
             })
@@ -302,76 +259,18 @@
                 data:tool.object.param( data.field),
                 success:function(){
                     layer.close($(data.form).data('layer-index'));
-                    tableIns.reload();
+                    table.reload('table_user');
                     tool.msg.ok('操作成功！');
                 }
             })
             return false;
         });
         function openForm(callback){
-            layer.open({
-                type: 1,
-                area: ['600px','500px'],
-                shade: 0.5,
-                maxmin:true,
-                fixed:true,
-                skin:'custom-layer-class',
-                offset: 'auto',
-                title:'用户',
-                content:$('#layer_add'),
-                btn:['提交','重置','取消'],
-                yes :function(index, layero){
-                    layero.find('form').find('button').trigger('click');
-                    layero.find('form').data('layer-index',index);
-                },
-                btn2:function (index, layero) {
-                    layero.find('form')[0].reset()
-                    return false;
-                },
-                btn3:function (index, layero) {
-                    layer.close(index);
-                },
-                success : function(layero, index){
-                    //form.render(null, 'test1'); // 重置
-                    layero.find('form')[0].reset();
-                }
-            });
+            dialog.open('用户',$('#layer_add'));
         }
         function openAuthcForm() {
-            //初始化角色
-            tool.http.ajax({
-                url:'/role',
-                method:'get',
-                success:function (res) {
-                    var opts = [];
-                    for(i in res.result){
-                        opts.push('<input type="checkbox" name="roleCode" value="'+res.result[i].roleCode+'" lay-skin="primary" title="'+res.result[i].roleName+'">');
-                    }
-                    $('#field_role').html(opts.join(''))
-                }
-            })
-            layer.open({
-                type: 1,
-                area: ['600px', '500px'],
-                shade: 0.5,
-                maxmin: true,
-                fixed: true,
-                skin: 'custom-layer-class',
-                offset: 'auto',
-                title: '授权',
-                content: $('#layer_authc'),
-                btn: ['提交', '取消'],
-                yes: function (index, layero) {
-                    layero.find('form').find('button').trigger('click');
-                    layero.find('form').data('layer-index', index);
-                },
-                btn2: function (index, layero) {
-                    layer.close(index);
-                },
-                success: function (layero, index) {
-                    layero.find('form')[0].reset();
-                }
-            });
+            select.render({url:'/role',elem:$('#field_role'),prop:'roleName',code:'roleCode',name:'roleName'})
+            dialog.open('授权',$('#layer_authc'));
         }
     });
 </script>

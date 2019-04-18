@@ -40,7 +40,8 @@
     })();
 
     layui.contextPath = layui._base.replace('/static/js','');
-    layui.config({
+    var ui = layui.config({
         base: layui._base+'/module/'
-    }).extend(app).use(entry);
+    }).extend(app);
+    entry && ui.use(entry);
 })();
