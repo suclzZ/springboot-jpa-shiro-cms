@@ -8,4 +8,5 @@ import org.apache.shiro.authc.AuthenticationToken;
  */
 public interface UserToken extends AuthenticationToken {
 
+    String getUsername();
 }

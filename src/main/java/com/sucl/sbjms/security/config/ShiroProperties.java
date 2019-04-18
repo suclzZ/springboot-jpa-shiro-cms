@@ -1,5 +1,6 @@
 package com.sucl.sbjms.security.config;
 
+import com.sucl.sbjms.security.Constant;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -12,5 +13,23 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "shiro")
 public class ShiroProperties {
 
-    private boolean verify = false;//是否启用验证码
+    /**
+     * 是否启用验证码
+     */
+    private boolean verify = false;
+
+    /**
+     * 默认开启
+     */
+    private boolean dev;
+
+    /**
+     *
+     */
+    private String hashAlgorithmName = Constant.DEFAULT_HASH_ALGORITHM;
+
+    /**
+     *
+     */
+    private int hashiterations = Constant.DEFAULT_HASH_ITERATIONS;
 }

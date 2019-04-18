@@ -23,7 +23,6 @@ public class MenuController extends BaseController<MenuService,Menu> {
 
     @GetMapping("/tree")
     public List<MenuNode> menuTree(){
-//        List<Menu> menus = service.getAll(null);
         List<Menu> menus = service.getMenusByUsername(null);
         return buildMenuNode(menus);
     }

@@ -6,6 +6,7 @@ import com.sucl.sbjms.security.auth.IUser;
 import com.sucl.sbjms.security.auth.PrincipalAdapter;
 import com.sucl.sbjms.security.token.UserToken;
 import org.apache.commons.collections.MapUtils;
+import org.apache.shiro.authc.pam.UnsupportedTokenException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationContext;
@@ -37,14 +38,18 @@ public class PrincipalServiceImpl implements PrincipalService, ApplicationContex
 
     @Override
     public GenericAccount getGenericAccount(UserToken token) {
+        GenericAccount account = null;
         if(principalAdapters!=null){
             for(PrincipalAdapter principalAdapter : principalAdapters){
                 if(principalAdapter.support(token)){
-                    return principalAdapter.getGenericAccount(token);
+                    account = principalAdapter.getGenericAccount(token);
+                    if(account!=null){
+                        return account;
+                    }
                 }
             }
         }
-        return null;
+        throw new UnsupportedTokenException();
     }
 
     @Override

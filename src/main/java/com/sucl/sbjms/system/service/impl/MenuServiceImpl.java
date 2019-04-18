@@ -10,6 +10,7 @@ import com.sucl.sbjms.system.service.MenuService;
 import com.sucl.sbjms.system.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
 public class MenuServiceImpl extends BaseServiceImpl<MenuDao,Menu> implements MenuService {
     @Autowired
     private UserService userService;
+    @Value("${shiro.dev:true}")
+    private boolean dev;
 
     @Override
     protected Class<Menu> getDomainClazz() {
@@ -33,11 +36,12 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuDao,Menu> implements Me
 
     @Override
     public List<Menu> getMenusByUsername(String username) {
+        if(ShiroUtils.isAdmin() || (ShiroUtils.isDev()&&dev)){
+            return getAll(null);
+        }
         if(username==null){
-            //获取当前用户
             username = ShiroUtils.getUser().getUsername();
         }
-        //用户获取角色
         User user = userService.getOne("username", username);
         List<Role> roles = user.getRoles();
         //角色获取菜单

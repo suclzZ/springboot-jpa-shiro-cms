@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -29,7 +30,13 @@ public class DefaultRealm extends AuthorizingRealm {
     @Autowired(required = false)
     private TokenCheckService tokenCheckService;
 
-    public DefaultRealm(PrincipalService principalService,TokenCheckService tokenCheckService){
+    @Autowired(required = false)
+    @Override
+    public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
+        super.setCredentialsMatcher(credentialsMatcher);
+    }
+
+    public DefaultRealm(PrincipalService principalService, TokenCheckService tokenCheckService){
         this.principalService = principalService;
         this.tokenCheckService = tokenCheckService;
     }
