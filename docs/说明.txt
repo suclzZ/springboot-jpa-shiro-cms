@@ -1,0 +1,20 @@
+1、springboot默认可以访问以下路径文件(见ResourceProperties)：
+    classpath:/static
+    classpath:/public
+    classpath:/resources
+    classpath:/META-INF/resources
+   主要原因是使用了@EnableWebMvc。
+   默认情况下mvc使用的配置是WebMvcAutoConfiguration，加入该配置变成了WebMvcConfigurationSupport（EnableWebMvcConfiguration）
+2、@EnableWebMvc、WebMvcConfigurationSupport、WebMvcConfigurationAdapter
+    @EnableWebMvc=WebMvcConfigurationSupport，使用了@EnableWebMvc注解等于扩展了WebMvcConfigurationSupport但是没有重写任何方法
+    @EnableWebMvc+extends WebMvcConfigurationAdapter，在扩展的类中重写父类的方法即可，这种方式会屏蔽springboot的@EnableAutoConfiguration中的设置
+    @EnableWebMvc+extends WebMvcConfigurationSupport
+    extends WebMvcConfigurationSupport，在扩展的类中重写父类的方法即可，这种方式会屏蔽springboot的@EnableAutoConfiguration中的设置
+    extends WebMvcConfigurationAdapter，在扩展的类中重写父类的方法即可，这种方式依旧使用springboot的@EnableAutoConfiguration中的设置
+    在springboot2.x中，WebMvcConfigurationAdapter已经过时，通过实现接口WebMvcConfigurer可以替代原有规则
+
+    实际开发时可以通过@EnableWebMvc+WebMvcConfigurationAdapter，相当于保留了springboot自动配置外还能进行扩展，
+    只使用WebMvcConfigurationSupport进行重写mvc相关配置
+    只使用@EnableWebMvc，放弃了springboot内置mvc配置，同时会对所有WebMvcConfigurer进行注入
+    只使用WebMvcConfigurationAdapter，使用WebMvcAutoConfiguration内置配置
+    @EnableWebMvc+WebMvcConfigurationSupport?
