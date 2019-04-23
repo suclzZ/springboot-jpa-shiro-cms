@@ -16,7 +16,7 @@
 				<form class="layui-form">
 					<div class="layui-tab" style="margin: 0;">
 						<ul class="layui-tab-title">
-							<li><a href="article-list.html">文章列表</a></li>
+							<!--<li><a href="article-list.html">文章列表</a></li>-->
 							<li class="layui-this">文章详情</li>
 							
 						</ul>
@@ -117,14 +117,14 @@
 			}
 		</script>
 		<script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
-		<script src="${request.contextPath}/static/js/module/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
+		<!--<script src="${request.contextPath}/static/js/module/common.js" type="text/javascript" charset="utf-8"></script>-->
 		<script>
 			
-			layui.use(['form', 'jquery', 'laydate', 'layer', 'laypage', 'dialog',  'element', 'upload', 'layedit'], function() {
+			layui.use(['form','laydate', 'layer','element', 'upload', 'layedit','dialog'], function() {
 				var form = layui.form,
 					layer = layui.layer,
-					$ = layui.jquery,
-					laypage = layui.laypage,
+					$ = layui.$,
 					laydate = layui.laydate,
 					layedit = layui.layedit,
 					element = layui.element,
@@ -133,6 +133,7 @@
 				//获取当前iframe的name值
 				var iframeObj = $(window.frameElement).attr('name');
 				//创建一个编辑器
+                // layedit.build('LAY_demo_editor');
 				var editIndex = layedit.build('LAY_demo_editor', {
 					tool: ['strong' //加粗
 						, 'italic' //斜体

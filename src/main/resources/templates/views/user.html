@@ -143,9 +143,9 @@
 <script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
 <script src="${request.contextPath}/static/js/index.js" data-main="main" type="text/javascript" charset="utf-8"></script>
 <script>
-    layui.use(['layer','tabled','form','tool','dialog','select'], function() {
+    layui.use(['layer','tabled','form','tool','dialog','checkbox'], function() {
         var layer = layui.layer ,table =layui.tabled ,form = layui.form ,
-            $=layui.$,tool=layui.tool,dialog=layui.dialog,select = layui.select;
+            $=layui.$,tool=layui.tool,dialog=layui.dialog,checkbox = layui.checkbox;
 
         //列表加载数据
         table.render({
@@ -269,7 +269,7 @@
             dialog.open('用户',$('#layer_add'));
         }
         function openAuthcForm() {
-            select.render({url:'/role',elem:$('#field_role'),prop:'roleName',code:'roleCode',name:'roleName'})
+            checkbox.render({url:'/role',elem:$('#field_role'),prop:'roleName',code:'roleCode',name:'roleName'})
             dialog.open('授权',$('#layer_authc'));
         }
     });

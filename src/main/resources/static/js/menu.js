@@ -5,6 +5,11 @@
  *  ]
  */
 layui.use(['element','tool'],function(exports){
+    var config = {
+        menuUrl :'menu/tree',
+        reqMethod:'GET',
+        elemSelecotr:'.layui-nav.layui-nav-tree'
+    }
     var $ = layui.$,tool = layui.tool,element = layui.element;
     var menus = [ ];
     var Menu = function(){
@@ -12,10 +17,10 @@ layui.use(['element','tool'],function(exports){
     };
     Menu.prototype.render = function(data){
         tool.http.ajax({
-            url:'/menu/tree',
-            method:'get',
+            url:config.menuUrl,
+            method:config.reqMethod,
             success:function(res){
-                $('.layui-nav.layui-nav-tree').html(build(res.result));
+                $(config.elemSelecotr).html(build(res.result));
                 element.render();
             },
         });
