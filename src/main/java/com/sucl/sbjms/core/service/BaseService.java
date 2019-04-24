@@ -3,6 +3,7 @@ package com.sucl.sbjms.core.service;
 import com.sucl.sbjms.core.orm.Condition;
 import com.sucl.sbjms.core.orm.Order;
 import com.sucl.sbjms.core.orm.Pager;
+import org.springframework.data.domain.Sort;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -16,15 +17,23 @@ public interface BaseService<R ,T> {
 
     T getById(Serializable id);
 
-    T getOne(String property,Object value);
+    List<T> getByIds(Collection ids);
+
+    T getOne(String property, Object value);
 
     T getInitializeObject(Serializable id, String[] props);
 
     List<T> getAll2(Collection<Condition> conditions);
 
+    List<T> getAll2(Collection<Condition> conditions, Sort sort);
+
     List<T> getAll(T t);
 
-    Pager<T> getPager(Pager pager,Collection<Condition> conditions,Collection<Order> orders);
+    public List<T> getAll(T t, Sort sort);
+
+    Pager<T> getPagerWithCondOrder(Pager pager, Collection<Condition> conditions, Collection<Order> orders);
+
+    Pager<T> getPagerWithCondSort(Pager pager, Collection<Condition> conditions, Sort sort);
 
     T save(T t);
 
@@ -36,7 +45,7 @@ public interface BaseService<R ,T> {
 
     void deleteById(Serializable id);
 
-    void delete(String property,Object value);
+    void delete(String property, Object value);
 
     void delete(T t);
 
@@ -45,4 +54,8 @@ public interface BaseService<R ,T> {
     boolean exist(Serializable id);
 
     boolean exist(T t);
+
+    boolean exist(String prop, Object value);
+
+    List<T> query(Collection<Condition> conditions);
 }

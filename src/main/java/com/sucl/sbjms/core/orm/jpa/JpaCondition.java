@@ -43,15 +43,14 @@ public class JpaCondition implements Condition {
 
     /**
      * 通过Criterion构建条件
-     * @param alias
      * @return
      */
-    public Criterion generateExpression(String alias){
+    public Criterion generateExpression(){
         if (this.value != null) {
             switch (this.operate) {
                 case EQ:
                     return Restrictions.eq(this.property, this.value);
-                case NQ:
+                case NE:
                     return Restrictions.ne(this.property, this.value);
                 case IS_NULL:
                     return Restrictions.isNull(this.property);
@@ -94,5 +93,16 @@ public class JpaCondition implements Condition {
 
     private Criterion generateBetween(String begin, String end) {
         return Restrictions.between(this.property, begin, end);
+    }
+
+    protected Criterion convertToCriterion(Condition condition) {
+        if(condition instanceof JpaOrCondition){
+            return ((JpaOrCondition) condition).generateExpression();
+        }else if(condition instanceof NestedCondition){
+            return ((NestedCondition)condition).generateExpression();
+        }else if( condition instanceof JpaCondition ){
+            return ((JpaCondition) condition).generateExpression();
+        }
+        return null;
     }
 }

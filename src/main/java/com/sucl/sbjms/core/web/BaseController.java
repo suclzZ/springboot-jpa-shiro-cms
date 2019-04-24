@@ -2,16 +2,14 @@ package com.sucl.sbjms.core.web;
 
 import com.sucl.sbjms.core.method.annotation.QueryCondition;
 import com.sucl.sbjms.core.method.annotation.QueryOrder;
+import com.sucl.sbjms.core.method.annotation.QuerySort;
+import com.sucl.sbjms.core.method.support.ConditionHandlerMethodArgumentResolver;
 import com.sucl.sbjms.core.orm.Condition;
-import com.sucl.sbjms.core.orm.Domain;
 import com.sucl.sbjms.core.orm.Order;
 import com.sucl.sbjms.core.orm.Pager;
 import com.sucl.sbjms.core.service.BaseService;
-import com.sucl.sbjms.system.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -41,12 +39,18 @@ public abstract class BaseController<S extends BaseService<?,T>,T> {
         return service.getInitializeObject(id, initialize);
     }
 
+    @GetMapping
+    public List<T> getAllByObj(T t){
+        return  service.getAll(t);
+    }
+
     /**
      * 根据条件查询
+     * 如何指定domain？
      * @param conditions
      * @return
      */
-    @GetMapping
+    @GetMapping(params = {ConditionHandlerMethodArgumentResolver.CONDITIONS})
     public List<T> getAll(@QueryCondition Collection<Condition> conditions){
         return  service.getAll2(conditions);
     }
@@ -59,8 +63,13 @@ public abstract class BaseController<S extends BaseService<?,T>,T> {
      * @return
      */
     @GetMapping(params = {"pager:pageIndex","pager:pageSize"})
-    public Pager<T> getPager(Pager pager, @QueryCondition Collection<Condition> conditions,@QueryOrder Collection<Order> orders){
-        return service.getPager(pager,conditions,orders);
+    public Pager<T> getPager(Pager pager, @QueryCondition Collection<Condition> conditions, @QueryOrder Collection<Order> orders){
+        return service.getPagerWithCondOrder(pager,conditions,orders);
+    }
+
+    @GetMapping(params = {"pager:pageIndex","pager:pageSize","_sort"})
+    public Pager<T> getPager(Pager pager, @QueryCondition Collection<Condition> conditions, @QuerySort Sort sort){
+        return service.getPagerWithCondSort(pager,conditions,sort);
     }
 
     /**

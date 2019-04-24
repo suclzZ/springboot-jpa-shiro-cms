@@ -37,4 +37,8 @@ public abstract class ShiroUtils extends SecurityUtils{
     public static boolean isDev() {
         return getUser() instanceof DevUser;
     }
+
+    public static boolean hasPermission(String permission){
+        return getSubject().isPermitted(permission);
+    }
 }

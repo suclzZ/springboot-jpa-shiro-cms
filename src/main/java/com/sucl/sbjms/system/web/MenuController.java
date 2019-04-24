@@ -1,6 +1,6 @@
 package com.sucl.sbjms.system.web;
 
-import com.sucl.sbjms.core.view.MenuNode;
+import com.sucl.sbjms.core.view.TreeNode;
 import com.sucl.sbjms.core.web.BaseController;
 import com.sucl.sbjms.system.entity.Menu;
 import com.sucl.sbjms.system.service.MenuService;
@@ -22,17 +22,17 @@ import java.util.stream.Collectors;
 public class MenuController extends BaseController<MenuService,Menu> {
 
     @GetMapping("/tree")
-    public List<MenuNode> menuTree(){
+    public List<TreeNode> menuTree(){
         List<Menu> menus = service.getMenusByUsername(null);
         return buildMenuNode(menus);
     }
 
-    private List<MenuNode> buildMenuNode(List<Menu> menus){
+    private List<TreeNode> buildMenuNode(List<Menu> menus){
         if(menus!=null){
             return menus.stream().filter(m -> {
                return StringUtils.isEmpty(m.getParentMenuCode());
             }).map(m->{
-                MenuNode node = menuToNode(m);
+                TreeNode node = menuToNode(m);
                 findChildren(node,menus);
                 return node;
             }).collect(Collectors.toList());
@@ -40,26 +40,26 @@ public class MenuController extends BaseController<MenuService,Menu> {
         return null;
     }
 
-    private void findChildren(MenuNode menu, List<Menu> menus) {
+    private void findChildren(TreeNode menu, List<Menu> menus) {
         menus.stream().forEach(m->{
             if(menu.getId().equals(m.getParentMenuCode())){
-                MenuNode node = menuToNode(m);
+                TreeNode node = menuToNode(m);
                 menu.add(node);
                 findChildren(node,menus);
             }
         });
     }
 
-    private MenuNode menuToNode(Menu menu){
-        MenuNode menuNode = new MenuNode();
-        menuNode.setId(menu.getMenuCode());
-        menuNode.setText(menu.getMenuName());
-        menuNode.setCls(menu.getStyle());
-        menuNode.setLink(menu.getPath());
-        menuNode.setLeaf("1".equals(menu.getLeaf()));
+    private TreeNode menuToNode(Menu menu){
+        TreeNode treeNode = new TreeNode();
+        treeNode.setId(menu.getMenuCode());
+        treeNode.setText(menu.getMenuName());
+        treeNode.setCls(menu.getStyle());
+        treeNode.setLink(menu.getPath());
+        treeNode.setLeaf("1".equals(menu.getLeaf()));
         if("0".equals(menu.getLeaf())){
-            menuNode.setChildren(new ArrayList<>());
+            treeNode.setChildren(new ArrayList<>());
         }
-        return menuNode;
+        return treeNode;
     }
 }

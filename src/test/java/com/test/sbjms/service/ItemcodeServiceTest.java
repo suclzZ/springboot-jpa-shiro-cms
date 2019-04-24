@@ -35,7 +35,7 @@ public class ItemcodeServiceTest extends Test {
 //        System.out.println(codeitems );
 
         Pager pager = new Pager("1","8");
-        Pager<Codeitem> p = codeitemService.getPager(pager, conditions, null);
+        Pager<Codeitem> p = codeitemService.getPagerWithCondOrder(pager, conditions, null);
         System.out.println(p);
     }
 }

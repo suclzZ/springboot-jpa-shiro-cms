@@ -74,7 +74,7 @@ public class ConditionHelper {
                     case EQ:
                         exampleMatcher.withMatcher(cond.getProperty(),matcher->matcher.exact().ignoreCase());
                         break;
-                    case NQ:
+                    case NE:
                         throw donotSupportException;
                     case IS_NULL:
                         throw donotSupportException;
@@ -150,7 +150,7 @@ public class ConditionHelper {
             conditions.stream().forEach(cond->{
                 if(cond instanceof NestedCondition){
                     //通过某种策略决定是or 还是 and
-                    specifications.add( new CustomSpecification<T>( Arrays.asList(((NestedCondition) cond).getConditions()) ));
+                    specifications.add( new CustomSpecification<T>( ((NestedCondition) cond).getConditions() ));
                 }else{
                     unNestedConditions.add(cond);
                 }

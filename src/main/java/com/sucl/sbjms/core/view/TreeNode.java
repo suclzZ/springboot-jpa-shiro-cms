@@ -9,15 +9,46 @@ import java.util.List;
  * @author sucl
  * @date 2019/4/9
  */
-public interface TreeNode {
+@Data
+public class TreeNode implements ITreeNode {
 
-    public String getName();
+    private String id;
+    private String pid;
+    private String text;
+    private String cls;
+    private String link;
+    private boolean leaf;
+    private List<ITreeNode> children;
+    private Object obj;//扩展属性
 
-    public boolean isSpread();
+    public void add(TreeNode treeNode) {
+        if(children==null){
+            this.children = new ArrayList<>();
+        }
+        this.children.add(treeNode);
+    }
 
-    public String getHref();
+    public String getLink() {
+        return link==null?"javascript:;":link;
+    }
 
-    public List<TreeNode> getChildren();
+    @Override
+    public String getName() {
+        return text;
+    }
 
-    public String getId();
+    @Override
+    public boolean isSpread() {
+        return !leaf;
+    }
+
+    @Override
+    public String getHref() {
+        return null;
+    }
+
+    @Override
+    public List<ITreeNode> getChildren() {
+        return children;
+    }
 }

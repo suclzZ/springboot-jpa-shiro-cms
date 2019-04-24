@@ -164,7 +164,7 @@ public class CustomSpecification<T> implements Specification {
                 case EQ:
                     predicate = criteriaBuilder.equal(path.as(String.class),value);
                     break;
-                case NQ:
+                case NE:
                     predicate = criteriaBuilder.notEqual(path.as(String.class),value);
                     break;
                 case IS_NULL:
@@ -218,7 +218,7 @@ public class CustomSpecification<T> implements Specification {
             if(operate == Condition.Opt.EQ || operate == Condition.Opt.IS_NULL){
                 predicate = criteriaBuilder.isNull(path.as(String.class));
             }
-            if(operate == Condition.Opt.NQ || operate == Condition.Opt.NOT_NULL){
+            if(operate == Condition.Opt.NE || operate == Condition.Opt.NOT_NULL){
                 predicate = criteriaBuilder.isNotNull(path.as(String.class));
             }
         }

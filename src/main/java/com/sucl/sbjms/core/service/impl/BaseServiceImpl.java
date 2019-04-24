@@ -3,20 +3,26 @@ package com.sucl.sbjms.core.service.impl;
 import com.sucl.sbjms.core.orm.Condition;
 import com.sucl.sbjms.core.orm.Order;
 import com.sucl.sbjms.core.orm.Pager;
+import com.sucl.sbjms.core.orm.jpa.JpaCondition;
+import com.sucl.sbjms.core.orm.jpa.JpaOrCondition;
+import com.sucl.sbjms.core.rem.BusException;
 import com.sucl.sbjms.core.service.BaseService;
 import com.sucl.sbjms.core.util.ConditionHelper;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.Repository;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -28,7 +34,7 @@ import java.util.List;
  * @author sucl
  * @date 2019/4/1
  */
-public abstract class BaseServiceImpl<R extends Repository<T,Serializable>,T> implements BaseService<R,T>{
+public abstract class BaseServiceImpl<R extends Repository<T,Serializable>,T> implements BaseService<R,T> {
 
     protected R dao;
     /**
@@ -62,6 +68,11 @@ public abstract class BaseServiceImpl<R extends Repository<T,Serializable>,T> im
     @Override
     public T getById(Serializable id) {
         return repository.findOne(id);
+    }
+
+    @Override
+    public List<T> getByIds(Collection ids){
+        return repository.findAll(ids);
     }
 
     @Override
@@ -105,6 +116,11 @@ public abstract class BaseServiceImpl<R extends Repository<T,Serializable>,T> im
     }
 
     @Override
+    public List<T> getAll2(Collection<Condition> conditions,Sort sort) {
+        return specificationExecutor.findAll(ConditionHelper.buildSpecification(conditions),sort);
+    }
+
+    @Override
     public List<T> getAll(T t) {
         if(t==null){
             return repository.findAll();
@@ -113,13 +129,32 @@ public abstract class BaseServiceImpl<R extends Repository<T,Serializable>,T> im
     }
 
     @Override
-    public Pager<T> getPager(Pager pager, Collection<Condition> conditions, Collection<Order> orders) {
+    public List<T> getAll(T t,Sort sort) {
+        if(t==null){
+            return repository.findAll(null,sort);
+        }
+        return repository.findAll(Example.of(t),sort);
+    }
+
+    @Override
+    public Pager<T> getPagerWithCondOrder(Pager pager, Collection<Condition> conditions, Collection<Order> orders) {
         Pageable pageable = new PageRequest(pager.getPageIndex()-1,pager.getPageSize(),ConditionHelper.buildSort(orders));
+        buildPager(pager,conditions,pageable);
+        return pager;
+    }
+
+    @Override
+    public Pager<T> getPagerWithCondSort(Pager pager, Collection<Condition> conditions, Sort sort) {
+        Pageable pageable = new PageRequest(pager.getPageIndex()-1,pager.getPageSize(),sort);
+        buildPager(pager,conditions,pageable);
+        return pager;
+    }
+
+    private void buildPager(Pager pager,Collection<Condition> conditions,Pageable pageable){
         Page<T> page = specificationExecutor.findAll(ConditionHelper.buildSpecification(conditions), pageable);
         pager.setMaxPage(page.getTotalPages());
         pager.setTotal( (int)page.getTotalElements());
         pager.setResult(page.getContent());
-        return pager;
     }
 
     @Override
@@ -170,5 +205,67 @@ public abstract class BaseServiceImpl<R extends Repository<T,Serializable>,T> im
     @Override
     public boolean exist(T t) {
         return repository.exists(Example.of(t));
+    }
+
+    @Override
+    public boolean exist(String prop,Object value) {
+        return getOne(prop,value)!=null;
+    }
+
+    protected EntityManager entityManager;
+
+    @PersistenceContext
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    public List<T> query(Collection<Condition> conditions){
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getDomainClazz());
+        Session session = entityManager.unwrap(Session.class);
+        Criteria criteria = detachedCriteria.getExecutableCriteria(session);//session
+        if(conditions!=null && conditions.size()>0){
+            for(Condition condition : conditions){
+                processCondition(criteria,condition);
+            }
+        }
+        try {
+            return criteria.list();
+        } catch (Exception e) {
+            throw new BusException("查询异常！",e);
+        }
+//        return Collections.emptyList();
+    }
+
+    private Criteria processCondition(Criteria criteria, Condition condition)    {
+        if ((condition instanceof JpaOrCondition)){
+            criteria = criteria.add(((JpaOrCondition)condition).generateExpression());
+            criteria = processJpaOrCondition(criteria, (JpaOrCondition)condition);
+        }else if ((condition instanceof JpaCondition)) {
+            processJpaCondition(criteria, (JpaCondition)condition);
+        }
+        return criteria;
+    }
+
+    private Criteria processJpaOrCondition(Criteria criteria, JpaOrCondition condition){
+        criteria = processJpaOrAndCondition(criteria, condition.getCondition1());
+        criteria = processJpaOrAndCondition(criteria, condition.getCondition2());
+        return criteria;
+    }
+
+    private Criteria processJpaOrAndCondition(Criteria criteria, Condition cond){
+        if ((cond instanceof JpaCondition)){
+//            criteria.add(((JpaCondition) cond).generateExpression(null));//
+        }else if ((cond instanceof JpaOrCondition)) {
+            criteria = processJpaOrCondition(criteria, (JpaOrCondition)cond);
+        }
+        return criteria;
+    }
+
+    private Criteria processJpaCondition(Criteria criteria, JpaCondition condition){
+        Criterion conditionCriterion = condition.generateExpression();
+        if (conditionCriterion != null) {
+            criteria = criteria.add(conditionCriterion);
+        }
+        return criteria;
     }
 }

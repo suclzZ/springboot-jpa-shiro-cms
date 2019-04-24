@@ -17,7 +17,7 @@ public interface Condition {
 
     public enum Opt{
         EQ,
-        NQ,
+        NE,
         IS_NULL,
         NOT_NULL,
         GT,
