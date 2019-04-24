@@ -38,7 +38,7 @@ layui.define([ 'element','layer'], function(exports) {
                 layer.close(index);
             }
         },options)
-        layer.open(opt);
+        layer.full(layer.open(opt));
     }
 
     exports('dialog',new Dialog);
