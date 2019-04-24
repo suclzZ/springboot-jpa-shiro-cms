@@ -11,19 +11,19 @@ layui.define(['table','laytpl','tool'],function(exports){
     }
     Checkbox.prototype.render = function(options){
         if(!options || !options.elem) return;
+        var opts = [],$elem = options.elem;
         if(options.convert && layui._idata){
-            var opts = [];
             for(var prop in layui._idata[options.convert]){
                 var data = {
-                    prop:options.elem.attr('name'),
-                    code:prop,
-                    name:layui._idata[options.convert][prop]
+                    prop:$elem.attr('name'),
+                    code:layui._idata[options.convert][prop]['code'],
+                    name:layui._idata[options.convert][prop]['caption']
                 }
                 laytpl(tpl).render(data, function(html){
                     opts.push(html)
                 });
             }
-            options.elem.html(opts.join(''))
+            $elem.html(opts.join(''))
             return;
         }
         if((options.url && options.code && options.name)||(options.url && options.code=='#')){
@@ -31,7 +31,6 @@ layui.define(['table','laytpl','tool'],function(exports){
                 url:options.url,
                 method:'get',
                 success:function (res) {
-                    var opts = [];
                     for(i in res.result){
                         var data = options.code=='#'?
                                     {
@@ -47,11 +46,10 @@ layui.define(['table','laytpl','tool'],function(exports){
                             opts.push(html)
                         });
                     }
-                    options.elem.html(opts.join(''))
+                    $elem.html(opts.join(''))
                 }
             })
         }
     }
-
     exports('checkbox',new Checkbox)
 })

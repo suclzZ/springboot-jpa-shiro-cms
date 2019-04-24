@@ -16,17 +16,6 @@
         };
 
     (function(){
-        window.addEventListener('hashchange',function(){
-            // doHashchange();
-        });
-        function doHashchange() {
-            var hash = window.location.hash && window.location.hash.substr(1);
-            // element.tabChange('tab', hash);//lay-id tab-id
-            hash && jQuery('#Nav li.layui-nav-item > dl.layui-nav-child > dd > a[data-id="'+hash+'"]').trigger('click');
-        }
-        // doHashchange();
-
-
         var dataMain, scripts = document.getElementsByTagName('script'),
             eachScripts = function(el){
                 dataMain = el.getAttribute('data-main');
@@ -37,6 +26,8 @@
                 }
             };
         [].slice.call(scripts).forEach(eachScripts);
+
+        init();
     })();
 
     layui.contextPath = layui._base.replace('/static/js','');
@@ -44,4 +35,16 @@
         base: layui._base+'/module/'
     }).extend(app);
     entry && ui.use(entry);
+
+    function init() {
+        window.addEventListener('hashchange',function(){
+            // doHashchange();
+        });
+        function doHashchange() {
+            var hash = window.location.hash && window.location.hash.substr(1);
+            // element.tabChange('tab', hash);//lay-id tab-id
+            hash && jQuery('#Nav li.layui-nav-item > dl.layui-nav-child > dd > a[data-id="'+hash+'"]').trigger('click');
+        }
+        // doHashchange();
+    }
 })();

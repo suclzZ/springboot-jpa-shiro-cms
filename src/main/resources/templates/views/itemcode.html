@@ -304,7 +304,6 @@
                     // obj.update();
                 }
             });
-
             table.on('toolbar(filter_table_codeitem)', function (obj) {
                 switch (obj.event) {
                     case 'add':
@@ -322,8 +321,8 @@
                     success:function(){
                         layer.close($(data.form).data('layer-index'));
                         tool.msg.ok('操作成功！');
-                        table.reload('table_codeitem', {
-                            url: app.contextPath+'/codeitem',
+                        tableIns2.reload({
+                            url:'/codeitem',
                             where:{'codegroup.groupId':tableIns1.selectTr}
                         })
                     }
@@ -353,7 +352,6 @@
                     // obj.update();
                 }
             });
-
 
             //按钮事件
             var active = {

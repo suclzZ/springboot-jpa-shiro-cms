@@ -1,8 +1,8 @@
-layui.define(['table','laytpl','tool'],function(exports){
-    var tool = layui.tool,laytpl=layui.laytpl,$=layui.$,
-        defConfig = {
+layui.define(['form','laytpl','tool'],function(exports){
+    var config = {
 
-        },
+    }
+    var tool = layui.tool, laytpl = layui.laytpl, $ = layui.$, form = layui.form,
         tpl = '<option value="{{d.value}}">{{d.name}}</option>',
         emptyOpt = '<option value="" selected>请选择</option>';
     var Select = function(){
@@ -10,41 +10,36 @@ layui.define(['table','laytpl','tool'],function(exports){
     }
     Select.prototype.render = function(options){
         if(!options || !options.elem) return;
+        var opts = [],$elem = options.elem;
+        if(!($elem.attr('required')!= void 0 || $elem.attr('lay-verify')=='required')){
+            opts.push(emptyOpt);
+        }
         if(options.convert && layui._idata){
-            var opts = [];
-            for(var prop in layui._idata[options.convert]){
-                var data = {
-                    prop:options.elem.attr('name'),
-                    code:prop,
-                    name:layui._idata[options.convert][prop]
-                }
+            var codeItems = layui._idata[options.convert];
+            for(var prop in codeItems){//数组
+                var data = {code:codeItems[prop]['code'], name:codeItems[prop]['caption'] }
                 laytpl(tpl).render(data, function(html){
                     opts.push(html)
                 });
             }
-            options.elem.html(opts.join(''))
+            $elem.html(opts.join(''))
             return;
         }
-        var opt = {url:options.elem.data('url'),code:options.elem.data('code'),name:options.elem.code};
+        var opt = {url:$elem.data('url'),code:$elem.data('code'),name:$elem.code};
         options = $.extend(opt ,options);
         if((options.url&& options.code && options.name)||(options.url&& options.code=='#')){
-            var data = {};
+            var data = {},$form = $elem.closest('form');
             if(options.parent){
                 options.parentCode = options.parentCode|| options.parent;
-                var pvalue = options.elem.closest('form').find('[name="'+options.parent+'"]').val();
+                var pvalue = $form.find('[name="'+options.parent+'"]').val();
                 data[options.parentCode] = pvalue;
             }
-            //初始化角色
             tool.http.ajax({
                 url:options.url,
                 method:'get',
                 async:false,
                 data:data,
                 success:function (res) {
-                    var opts = [];
-                    if(!(options.elem.attr('required')!=void 0 || options.elem.attr('lay-verify')=='required')){
-                        opts.push(emptyOpt);
-                    }
                     for(i in res.result){
                         var data = options.code=='#'?
                                 {
@@ -58,14 +53,15 @@ layui.define(['table','laytpl','tool'],function(exports){
                             opts.push(html)
                         });
                     }
-                    options.elem.html(opts.join(''));
-                    if(options.elem.data('cacheValue')!= void 0){
-                        options.elem.val(options.elem.data('cacheValue'));
+                    $elem.html(opts.join(''));
+                    if($elem.data('cacheValue')!= void 0){
+                        // $elem.val($elem.data('cacheValue'));
+                        var value = {};value[$elem.attr('name')] = $elem.data('cacheValue');
+                        form.val($form.attr('lay-filter'),value);//有病的写法，但是框架只能这样赋值啊
                     }
                 }
             })
         }
     }
-
     exports('select',new Select)
 })

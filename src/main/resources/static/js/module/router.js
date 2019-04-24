@@ -3,21 +3,13 @@
  * 没有form菜单出现问题
  * 如何通过hash保证刷新
  */
-layui.define([ 'form', 'element','laydate'], function(exports) {
-	var element = layui.element,
-        $ = layui.jquery,
-        laydate = layui.laydate,
+layui.define(['form', 'element','component','dictionary'], function(exports) {
+	var $ = layui.jquery,element = layui.element,
+        dictionary = layui.dictionary,component=layui.component,
 		TAB_OFFSET = 1,//主页占用tab
 		hideBtn = $('#hideBtn'),//隐藏菜单按钮
 		mainLayout = $('#main-layout'),//主区域
         mainMask = $('.main-mask');//遮挡层
-        
-    (function(){
-        laydate.render({
-            elem: '.layui-date' //指定元素
-            , trigger: 'click'//默认的会出问题，说是必选是focus，然而并不是
-        });
-    })();
 
 	//菜单选中记录
     var Tab = function(el){
@@ -87,9 +79,9 @@ layui.define([ 'form', 'element','laydate'], function(exports) {
                     $this.closest('li.layui-nav-item')
                         .addClass('layui-nav-itemed')
                         .siblings().removeClass('layui-nav-itemed');
-								}else if($this.parent().is('li')){//导航菜单
-				             // $this.parent('li').removeClass('layui-this');
-								}
+                }else if($this.parent().is('li')){//导航菜单
+                    // $this.parent('li').removeClass('layui-this');
+                }
             }
         });
         tabs.onDelete(function(data){

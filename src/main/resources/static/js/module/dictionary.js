@@ -1,16 +1,22 @@
-layui.define(['table','laytpl','tool'],function(exports){
+/**
+ * layui._idata:{'group':[{code:'',caption:''}...]}
+ * layui._icode:{'group':{k1:v1,k2:v2...}}
+ */
+layui.define(['tool'],function(exports){
+    layui._idata = layui._idata ||{};
+    layui._icode = layui._icode ||{};
     var config = {
-        URL:'/codeitem',
-        METHOD_TYPE:'GET'
+        URL:'/dictionary',
+        METHOD_TYPE:'GET',
+        GROUP:'group',
+        DATA:'data'
     }
-    var tool = layui.tool,laytpl=layui.laytpl;
-    var CodeItem = function(){
-        layui._idata = layui._idata ||{};
-        layui._icode = layui._icode ||{};
+    var $ = layui.$, tool = layui.tool;
+    var Dictionary = function(){
         tool.http.ajax({
             url:config.URL,
             method:config.METHOD_TYPE,
-            success:function(res){
+            success:function(res){//res:[{'group':[{code:'',caption:''}...]}]
                 var idata = {},icode={};
                 if(res && res.result){
                     for(var i in res.result){
@@ -27,9 +33,9 @@ layui.define(['table','laytpl','tool'],function(exports){
             }
         })
     }
-    CodeItem.prototype.render = function(options){
+    Dictionary.prototype.render = function(options){
 
     }
 
-    exports('codeitem',new CodeItem)
+    exports('dictionary',new Dictionary)
 })
