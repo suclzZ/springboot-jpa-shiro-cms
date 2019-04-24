@@ -49,6 +49,22 @@ layui.define(['table'],function(exports){
             });
         }
     }
+    
+    Tabled.prototype.convert = function(code){
+        var that = this;
+        return (function(c){
+            return function(row){
+                var value = row[this.field];
+                return that.codeConvert.call(that,c,value);
+            }
+        })(code);
+    }
+    Tabled.prototype.codeConvert = function(code,value){
+        if(layui._idata && layui._idata[code]){
+            return layui._idata[code][value];
+        }
+        return value;
+    }
 
     exports('tabled',new Tabled)
 });

@@ -10,7 +10,7 @@ layui.define(['table','laytpl','tool'],function(exports){
 
     }
     Checkbox.prototype.render = function(options){
-        if(!options.elem) return;
+        if(!options || !options.elem) return;
         if(options.convert && layui._idata){
             var opts = [];
             for(var prop in layui._idata[options.convert]){
