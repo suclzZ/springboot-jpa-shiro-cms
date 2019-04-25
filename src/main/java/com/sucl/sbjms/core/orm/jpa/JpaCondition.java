@@ -1,6 +1,9 @@
 package com.sucl.sbjms.core.orm.jpa;
 
 import com.sucl.sbjms.core.orm.Condition;
+import com.sucl.sbjms.core.orm.DbField;
+import com.sucl.sbjms.core.orm.DbSql;
+import com.sucl.sbjms.core.rem.UnSupportOptException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +25,7 @@ public class JpaCondition implements Condition {
     protected Opt operate;
     protected Object value;
 
-    public JpaCondition(String property,Object value){
+    public JpaCondition(String property, Object value){
         this(property,Opt.EQ,value);
     }
 
@@ -43,10 +46,34 @@ public class JpaCondition implements Condition {
 
     /**
      * 通过Criterion构建条件
+     * conjunction (A AND B AND C)
+     * disjunction (A OR B or C)
      * @return
      */
     public Criterion generateExpression(){
         if (this.value != null) {
+            if(this.value instanceof DbField){
+                String otherProp = ((DbField)value).getField();
+                switch (this.operate){
+                    case EQ:
+                        return Restrictions.eqProperty(this.property,otherProp);
+                    case NE:
+                        return Restrictions.neProperty(this.property,otherProp);
+                    case GT:
+                        return Restrictions.gtProperty(this.property,otherProp);
+                    case GE:
+                        return Restrictions.geProperty(this.property,otherProp);
+                    case LT:
+                        return Restrictions.ltProperty(this.property,otherProp);
+                    case LE:
+                        return Restrictions.leProperty(this.property,otherProp);
+                }
+                throw new UnSupportOptException(String.format("db不支持的比较符【%s】",this.operate.name()));
+            }
+            if(this.value instanceof DbSql){
+                //参数扩展
+                return Restrictions.sqlRestriction(((DbSql) value).getSql());
+            }
             switch (this.operate) {
                 case EQ:
                     return Restrictions.eq(this.property, this.value);

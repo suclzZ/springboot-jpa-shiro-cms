@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AgencyServiceImpl extends BaseServiceImpl<AgencyDao,Agency> implements AgencyService {
     @Override
-    protected Class<Agency> getDomainClazz() {
+    public Class<Agency> getDomainClazz() {
         return Agency.class;
     }
 }

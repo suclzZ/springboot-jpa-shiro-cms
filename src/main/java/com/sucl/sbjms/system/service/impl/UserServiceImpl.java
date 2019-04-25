@@ -36,7 +36,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDao,User> implements Us
     private PasswordService passwordService;
 
     @Override
-    protected Class<User> getDomainClazz() {
+    public Class<User> getDomainClazz() {
         return User.class;
     }
 

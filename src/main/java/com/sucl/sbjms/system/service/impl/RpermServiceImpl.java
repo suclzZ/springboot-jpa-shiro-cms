@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class RpermServiceImpl extends BaseServiceImpl<RpermDao,Rperm> implements RpermService {
     @Override
-    protected Class<Rperm> getDomainClazz() {
+    public Class<Rperm> getDomainClazz() {
         return Rperm.class;
     }
 }

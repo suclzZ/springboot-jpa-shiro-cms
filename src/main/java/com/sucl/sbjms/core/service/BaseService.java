@@ -15,6 +15,10 @@ import java.util.List;
  */
 public interface BaseService<R ,T> {
 
+    default Class<T> getDomainClazz(){
+        throw new RuntimeException("No entity type is defined");
+    }
+
     T getById(Serializable id);
 
     List<T> getByIds(Collection ids);

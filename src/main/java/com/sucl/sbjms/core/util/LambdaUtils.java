@@ -1,67 +1,65 @@
 package com.sucl.sbjms.core.util;
 
 import com.sucl.sbjms.core.service.Property;
+import org.springframework.util.StringUtils;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
+import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+//import java.lang.invoke.SerializedLambda;
+
 /**
+ * 通过lamdba表示对象属性名
+ * 比如在jpa中的操作
  * @author sucl
  * @date 2019/4/22
  */
 public final class LambdaUtils {
+    public static final String IS = "is";
 
     private static final Map<String, Map<String, String>> LAMBDA_CACHE = new ConcurrentHashMap<>();
 
-    private static final Map<Class, WeakReference<SerializedLambda>> FUNC_CACHE = new ConcurrentHashMap<>();
-
     /**
-     * <p>
-     * 解析 lambda 表达式
-     * </p>
-     *
-     * @param func 需要解析的 lambda 对象
-     * @param <T>  类型，被调用的 Function 对象的目标类型
-     * @return 返回解析后的结果
+     * 参考mybatis-plus ，但为什么需要重新建一个同名同序列号的SerializedLambda类，同时里面的方法都要删除
+     * @param func
+     * @param <T>
+     * @return
      */
     public static <T> SerializedLambda resolve(Property<T, ?> func) {
         Class clazz = func.getClass();
-        return Optional.ofNullable(FUNC_CACHE.get(clazz))
-                .map(WeakReference::get)
-                .orElseGet(() -> {
-                    SerializedLambda lambda = SerializedLambda.convert(func);
-                    FUNC_CACHE.put(clazz, new WeakReference<>(lambda));
-                    return lambda;
-                });
+        SerializedLambda lambda = SerializedLambda.convert(func);
+        return lambda;
     }
 
     /**
-     * 保存缓存信息
-     *
-     * @param className 类名
-     * @param property  属性
-     * @param sqlSelect 字段搜索
+     * lamdba 内置方法writeReplace返回值为java.lang.invoke.SerializedLambda
+     * @param fn
+     * @param <T>
+     * @return
      */
-    private static void saveCache(String className, String property, String sqlSelect) {
-        Map<String, String> cacheMap = LAMBDA_CACHE.getOrDefault(className, new HashMap<>());
-        cacheMap.put(property, sqlSelect);
-        LAMBDA_CACHE.put(className, cacheMap);
+    public static <T> String getPropertyName(Property<T,?> fn) {
+        try {
+            Method method = fn.getClass().getDeclaredMethod("writeReplace");
+            method.setAccessible(Boolean.TRUE);
+            java.lang.invoke.SerializedLambda serializedLambda = (java.lang.invoke.SerializedLambda) method.invoke(fn);
+            String getter = serializedLambda.getImplMethodName();
+//            String fieldName = Introspector.decapitalize(getter.replace("get", ""));
+            return resolveFieldName(getter);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
-    /**
-     * <p>
-     * 获取实体对应字段 MAP
-     * </p>
-     *
-     * @param entityClassName 实体类名
-     * @return 缓存 map
-     */
-    public static Map<String, String> getColumnMap(String entityClassName) {
-        return LAMBDA_CACHE.get(entityClassName);
+    public static String resolveFieldName(String getMethodName) {
+        if (getMethodName.startsWith("get")) {
+            getMethodName = getMethodName.substring(3);
+        } else if (getMethodName.startsWith(IS)) {
+            getMethodName = getMethodName.substring(2);
+        }
+        return StringUtils.uncapitalize(getMethodName);
     }
+
 }
 

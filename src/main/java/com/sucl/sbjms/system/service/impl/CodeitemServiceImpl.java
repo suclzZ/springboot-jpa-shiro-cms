@@ -27,7 +27,7 @@ import java.util.Map;
 @Transactional
 public class CodeitemServiceImpl extends BaseServiceImpl<CodeitemDao,Codeitem> implements CodeitemService,DataDictionaryService {
     @Override
-    protected Class<Codeitem> getDomainClazz() {
+    public Class<Codeitem> getDomainClazz() {
         return Codeitem.class;
     }
 

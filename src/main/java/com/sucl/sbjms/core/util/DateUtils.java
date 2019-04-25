@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
  * @date 2019/4/23
  */
 public class DateUtils {
-    public static final String FORMATE_SLASH = "yyyy-mm-dd";
-    public static final String FORMATE_HYPHEN = "yyyy/mm/dd";
+    public static final String FORMATE_SLASH = "yyyy-MM-dd";
+    public static final String FORMATE_HYPHEN = "yyyy/MM/dd";
 
     public static boolean isDate(String date){
         Pattern pattern = Pattern.compile("\\d{4}(-|/)\\d{2}(-|/)\\d{2}");

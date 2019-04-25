@@ -4,6 +4,7 @@ import com.sucl.sbjms.core.method.support.ConditionHandlerMethodArgumentResolver
 import com.sucl.sbjms.core.method.support.OrderHandlerMethodArgumentResolver;
 import com.sucl.sbjms.core.method.support.PagerHandlerMethodArgumentResolver;
 import com.sucl.sbjms.core.orm.hibernate.HibernateAwareObjectMapper;
+import com.sucl.sbjms.core.service.impl.RefreshInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpInputMessage;
@@ -71,12 +72,22 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
     /**
+     * 可刷新服务
+     * @return
+     */
+    @Bean
+    public RefreshInterceptor refreshInterceptor(){
+        return new RefreshInterceptor();
+    }
+
+    /**
      * 注册过国际化请求参数拦截
      * @param registry
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
+        registry.addInterceptor(refreshInterceptor());
     }
 
     /**

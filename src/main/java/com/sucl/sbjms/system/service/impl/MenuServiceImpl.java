@@ -30,7 +30,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuDao,Menu> implements Me
     private boolean dev;
 
     @Override
-    protected Class<Menu> getDomainClazz() {
+    public Class<Menu> getDomainClazz() {
         return Menu.class;
     }
 

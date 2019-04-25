@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class RoleServiceImpl extends BaseServiceImpl<RoleDao,Role> implements RoleService {
     @Override
-    protected Class<Role> getDomainClazz() {
+    public Class<Role> getDomainClazz() {
         return Role.class;
     }
 }

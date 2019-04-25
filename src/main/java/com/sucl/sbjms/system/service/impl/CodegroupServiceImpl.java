@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CodegroupServiceImpl extends BaseServiceImpl<CodegroupDao,Codegroup> implements CodegroupService {
     @Override
-    protected Class<Codegroup> getDomainClazz() {
+    public Class<Codegroup> getDomainClazz() {
         return Codegroup.class;
     }
 }

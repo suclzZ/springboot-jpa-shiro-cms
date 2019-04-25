@@ -6,6 +6,7 @@ import com.sucl.sbjms.core.orm.Pager;
 import com.sucl.sbjms.core.orm.jpa.JpaCondition;
 import com.sucl.sbjms.core.orm.jpa.JpaOrCondition;
 import com.sucl.sbjms.core.rem.BusException;
+import com.sucl.sbjms.core.rem.ExceptionUtils;
 import com.sucl.sbjms.core.service.BaseService;
 import com.sucl.sbjms.core.util.ConditionHelper;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -46,7 +47,7 @@ public abstract class BaseServiceImpl<R extends Repository<T,Serializable>,T> im
      */
     protected JpaSpecificationExecutor<T> specificationExecutor;
 
-    protected abstract Class<T> getDomainClazz();
+//    public abstract Class<T> getDomainClazz();
 
     @Resource
     public void setRepository(R r) {
@@ -219,6 +220,12 @@ public abstract class BaseServiceImpl<R extends Repository<T,Serializable>,T> im
         this.entityManager = entityManager;
     }
 
+    /**
+     * 该查询比较复杂，设计各种组合嵌套
+     * 但不支持关联查询，如有需要参考上面
+     * @param conditions
+     * @return
+     */
     public List<T> query(Collection<Condition> conditions){
         DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getDomainClazz());
         Session session = entityManager.unwrap(Session.class);
@@ -231,15 +238,20 @@ public abstract class BaseServiceImpl<R extends Repository<T,Serializable>,T> im
         try {
             return criteria.list();
         } catch (Exception e) {
-            throw new BusException("查询异常！",e);
+            e.printStackTrace();
+            throw new BusException("查询异常:",ExceptionUtils.getRootCause(e));
         }
 //        return Collections.emptyList();
     }
 
     private Criteria processCondition(Criteria criteria, Condition condition)    {
         if ((condition instanceof JpaOrCondition)){
-            criteria = criteria.add(((JpaOrCondition)condition).generateExpression());
-            criteria = processJpaOrCondition(criteria, (JpaOrCondition)condition);
+            Criterion c = ((JpaOrCondition) condition).generateExpression();
+            if(c!=null){
+                criteria = criteria.add(c);
+                criteria = processJpaOrCondition(criteria, (JpaOrCondition)condition);
+            }
+
         }else if ((condition instanceof JpaCondition)) {
             processJpaCondition(criteria, (JpaCondition)condition);
         }
@@ -253,10 +265,12 @@ public abstract class BaseServiceImpl<R extends Repository<T,Serializable>,T> im
     }
 
     private Criteria processJpaOrAndCondition(Criteria criteria, Condition cond){
-        if ((cond instanceof JpaCondition)){
+        if(cond!=null){
+            if ((cond instanceof JpaCondition)){
 //            criteria.add(((JpaCondition) cond).generateExpression(null));//
-        }else if ((cond instanceof JpaOrCondition)) {
-            criteria = processJpaOrCondition(criteria, (JpaOrCondition)cond);
+            }else if ((cond instanceof JpaOrCondition)) {
+                criteria = processJpaOrCondition(criteria, (JpaOrCondition)cond);
+            }
         }
         return criteria;
     }
