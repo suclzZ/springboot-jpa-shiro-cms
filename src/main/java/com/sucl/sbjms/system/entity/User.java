@@ -79,7 +79,6 @@ public class User implements Domain,IUser {
     @Column(name = "address",length = 128)
     private String address;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "create_date")
     private Date createDate;
 

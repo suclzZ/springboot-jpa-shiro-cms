@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,6 +58,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDao,User> implements Us
             User temp = getById(user.getUserId());
             user.setPassword(temp.getPassword());
         }else{
+            user.setCreateDate(new Date());
             user.setPassword(passwordService.encryptPassword(Constant.DEFAULT_PASSWORD));
         }
         return super.save(user);

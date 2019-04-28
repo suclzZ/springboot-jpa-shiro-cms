@@ -24,7 +24,7 @@ public class DateUtils {
         System.out.println(isDate("2018-01-01"));
     }
 
-    public static Object getDate(String value) {
+    public static Date getDate(String value) {
         SimpleDateFormat sdf = new SimpleDateFormat(FORMATE_SLASH);
         Date date = null;
         try {

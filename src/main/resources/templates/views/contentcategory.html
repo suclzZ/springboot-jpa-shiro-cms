@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>文档分类</title>
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/static/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/static/css/admin.css" />
+</head>
+
+<body>
+<div id="content-contentcategory" class="page-content-wrap">
+    <div id="layer_add" class="layui-card" style="display: none">
+    <form class="layui-form layui-card-body" lay-filter="filter_form_add">
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">ID</label>
+            <div class="layui-input-block">
+                <input type="text" name="ccId" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类编码</label>
+            <div class="layui-input-block">
+                <input type="text" name="ccCode"  lay-verify="required" placeholder="分类编码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="ccName"  lay-verify="required" placeholder="分类名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分组</label>
+            <div class="layui-input-block">
+                <input type="text" name="ccGroup" placeholder="分组" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-input-block layui-hide">
+            <button class="layui-btn" lay-submit lay-filter="form_submit"></button>
+        </div>
+    </form>
+    </div>
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <input type="text" operate="LIKE" name="contentcategoryCaption" lay-verify="required" placeholder="请输入分类" autocomplete="off" class="layui-input">
+            </div>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" data-method="search"><i class="layui-icon layui-icon-search"></i>搜索</button>
+        </div>
+        <table id="table_contentcategory" lay-filter="filter_table_contentcategory" class="layui-table" lay-skin="line">
+        </table>
+        <script type="text/html" id="toolbar">
+            <a class="layui-btn layui-btn-normal  layui-btn-sm" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加</a>
+        </script>
+        <script type="text/html" id="optbar">
+            <a class="layui-icon layui-icon-edit" lay-event="edit" title="修改"></a>
+            <a class="layui-icon layui-icon-delete" lay-event="del" title="删除"></a>
+        </script>
+    </div>
+</div>
+<script src="${request.contextPath}/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/js/index.js" data-main="router" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['layer','tabled','form','tool','dialog'], function() {
+        var layer = layui.layer ,table =layui.tabled ,form = layui.form ,
+            $=layui.$,tool=layui.tool,dialog=layui.dialog;
+
+        //列表加载数据
+        table.render({
+            elem:'#table_contentcategory',
+            url:'/contentcategory',
+            cols:[[
+                {type: 'checkbox', fixed: 'left'},
+                {field:'ccId', title:'ID',hide:true},
+                {field:'ccCode', title:'类型编码', width:'30%'},
+                {field:'ccName', title:'类型名称', width:'30%'},
+                {field:'ccGroup', title:'分组', width:'20%'},
+                {toolbar:'#optbar', title:'操作'}
+            ]]
+        });
+        //工具栏
+        table.on('toolbar(filter_table_contentcategory)', function(obj){
+            switch(obj.event){
+                case 'add': openForm(); break;
+            };
+        });
+        //行点击
+        table.on('row(filter_table_contentcategory)', function(obj){//obj.tr、obj.data obj.del(); obj.update(fields)
+            $(obj.tr).addClass('layui-table-selected').siblings().removeClass('layui-table-selected');
+        });
+        table.on('rowDouble(filter_table_contentcategory)', function(obj){
+        });
+        //操作栏
+        table.on('tool(filter_table_contentcategory)', function(obj){//obj.data、obj.event、obj.tr
+            var layEvent = obj.event;
+            if(layEvent === 'del'){ //删除
+                tool.msg.confirm('确定删除该条数据?', function(index){
+                    obj.del();
+                    layer.close(index);
+                    tool.http.ajax({
+                        url:'/contentcategory/'+obj.data.contentcategoryId,
+                        method:'delete',
+                        success:function(){
+                            tool.msg.ok('删除成功！');
+                        }
+                    });
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                tool.http.ajax({
+                    url:'/contentcategory/'+obj.data.contentcategoryId+'?initialize=agency',
+                    method:'get',
+                    success:function(res){
+                        openForm(function () {
+                            form.val('filter_form_add',tool.object.toParam( res.result));
+                        });
+                    }
+                })
+            }
+        });
+        //按钮事件
+        var active = {
+            search:function(btn){
+                var conditions = [];
+                $(btn).parent().find('input').each(function(){
+                    conditions.push({property:$(this).attr('name'),value:$(this).val(),operate:$(this).attr('operate')})//
+                });
+                table.reload('table_contentcategory',{
+                    where:{_conditions:JSON.stringify(conditions)}
+                });
+            }
+        };
+        //data-method进行按钮绑定
+        $('#content-contentcategory .layui-btn').on('click', function(){
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+        //form
+        form.on('submit(form_submit)',function (data) {
+            tool.http.ajax({
+                url:'/contentcategory',
+                data:tool.object.toValue(data.field),
+                success:function(){
+                    layer.close($(data.form).data('layer-index'));
+                    table.reload('table_contentcategory');
+                    tool.msg.ok('操作成功！');
+                }
+            })
+            return false;
+        });
+        function openForm(callback){
+            dialog.open('用户',$('#layer_add'),{afterOpen:callback});
+        }
+    });
+</script>
+</body>
+
+</html>

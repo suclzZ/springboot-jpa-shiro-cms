@@ -5,6 +5,7 @@ import com.sucl.sbjms.core.method.support.OrderHandlerMethodArgumentResolver;
 import com.sucl.sbjms.core.method.support.PagerHandlerMethodArgumentResolver;
 import com.sucl.sbjms.core.orm.hibernate.HibernateAwareObjectMapper;
 import com.sucl.sbjms.core.service.impl.RefreshInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpInputMessage;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * WebMvcConfigurationSupport、WebMvcConfigurerAdapter
@@ -110,6 +113,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         super.addResourceHandlers(registry);
     }
 
+    @Autowired(required = false)
+    private Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder;
+
     /**
      * 修改默认的消息转换器
      * 处理jpa查询数据JavassistLazyInitializer 相关问题
@@ -120,6 +126,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         for(HttpMessageConverter converter: converters){
             if(converter instanceof MappingJackson2HttpMessageConverter){
                 HibernateAwareObjectMapper hibernateAwareObjectMapper = new HibernateAwareObjectMapper();
+                if(jackson2ObjectMapperBuilder!=null){//将spring.jackson相关配置注入
+                    jackson2ObjectMapperBuilder.configure(hibernateAwareObjectMapper);
+                }
                 ((MappingJackson2HttpMessageConverter) converter).setObjectMapper(hibernateAwareObjectMapper);
             }
         }

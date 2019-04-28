@@ -348,7 +348,7 @@
                     });
                 } else if(layEvent === 'edit'){ //编辑
                     openItemForm();
-                    form.val('filter_form_additem',tool.object.objConvert(obj.data));
+                    form.val('filter_form_additem',tool.object.toValue(obj.data));
                     // obj.update();
                 }
             });

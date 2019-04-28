@@ -1,5 +1,6 @@
 layui.define(['layer'], function (exports) {
-    var $ = layui.$,layer = layui.layer,
+    var $ = layui.$,layer = layui.layer,hint = layui.hint(),
+        errorTips = 'property lay-data configuration item has a syntax error: '
         tool = {
             array:{
                 /**
@@ -33,19 +34,35 @@ layui.define(['layer'], function (exports) {
                 }
             },
             object:{
-                //
-                objConvert : function(obj){
+                strToObject:function (elem) {
+                    var optData = elem.attr('lay-data');
+                    try{
+                        optData = new Function('return '+ optData)();
+                    } catch(e){
+                        hint.error(errorTips + optData)
+                    }
+                    return optData ||{};
+                },
+                /**
+                 * 提交数据时使用
+                 * {name:'zs',age:'25',agency:{id:'1'}} => {name:'zs',age:'25',agency.id:'1'}
+                 * @param obj
+                 * @returns {*}
+                 */
+                toValue : function(obj){
                     if(obj && $.type(obj) == 'object'){
                         return this.reBuildObj(obj);
                     }
                     return obj
                 },
-                reBuildObj:function (obj,prefix){
+                reBuildObj:function (obj,prefix){//obj -> value
                     var elem = {},prefix = prefix||'';
                     if($.type(obj) == 'object'){
                         for(var p in obj){
-                            var _elem = this.reBuildObj(obj[p],prefix+'.'+p);
-                            $.extend(elem,_elem);
+                            if(obj[p]){
+                                var _elem = this.reBuildObj(obj[p],prefix+'.'+p);
+                                $.extend(elem,_elem);
+                            }
                         }
                     }else{
                         prefix && (elem[prefix.substring(prefix.indexOf('.')+1)]=obj)
@@ -54,12 +71,13 @@ layui.define(['layer'], function (exports) {
                     return elem;
                 },
                 /**
+                 * 接收数据显示时使用
                  * springmvc list接收数据类型prop[0].ele=格式
                  * {a:'1',b:{name:'zs'},c:[{x:'11',y:'22'}],d:['x','y']} ->
                  * {a:'1',b.name:'zs},c[0].x:'11',c[0].y:'22',d[0]:'x',d[1]:'y'}
                  * @param obj
                  */
-                param:function(obj){
+                toParam:function(obj){
                     var param = {};
                     if(typeof obj == 'object'){
                         for(var p in obj){
@@ -132,6 +150,10 @@ layui.define(['layer'], function (exports) {
                                 tool.msg.warn(errorMessage);
                                 oldError.apply(_options,[errorMessage]);
                             }
+                            layer.confirm('请求错误，重新加载？',function () {
+                                // window.location.reload();
+                                window.parent && window.parent.location.reload();
+                            })
                         }
                     },options);
 

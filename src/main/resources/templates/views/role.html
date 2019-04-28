@@ -243,7 +243,7 @@
             $.extend(data.field,{menus:menus})
             tool.http.ajax({
                 url:'/role/authc',
-                data:tool.object.param(data.field),
+                data:tool.object.toParam(data.field),
                 success:function(){
                     layer.close($(data.form).data('layer-index'));
                     tableIns.reload();

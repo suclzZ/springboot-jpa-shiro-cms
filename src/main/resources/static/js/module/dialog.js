@@ -1,5 +1,5 @@
-layui.define([ 'element','layer'], function(exports) {
-    var layer = layui.layer,$ = layui.$,
+layui.define(['element','layer','component'], function(exports) {
+    var layer = layui.layer,$ = layui.$, component = layui.component,
     defConfig = {
         type:1,
         // area: ['600px', '500px'],
@@ -7,14 +7,7 @@ layui.define([ 'element','layer'], function(exports) {
         maxmin: true,
         fixed: true,
         skin: 'custom-layer-class',
-        offset: 'auto',
-        success: function (layero, index) {
-            //将 form重置，form如果有赋值一定要在打开后
-            layero.find('form')[0].reset();
-        },
-        end:function () {
-            
-        }
+        offset: 'auto'
     },DEF_WIDTH=600,DEF_HEIGHT=500;
 
     var Dialog = function () {
@@ -25,17 +18,25 @@ layui.define([ 'element','layer'], function(exports) {
         this.area = area;
     }
     Dialog.prototype.open = function (title,elem,options) {
+        component.init();//
         var opt = $.extend({},defConfig,{
             title: title,
             content: elem,
             area:this.area,
             btn: ['提交', '取消'],
             yes: function (index, layero) {
-                layero.find('form').find('button[lay-submit]').trigger('click');
+                layero.find('form').find('button[lay-submit]').trigger('click');//从弹窗获取submit按钮并点击
                 layero.find('form').data('layer-index', index);
             },
             btn2: function (index, layero) {
                 layer.close(index);
+            },
+            success: function (layero, index) {
+                layero.find('form')[0].reset();
+                options && options.afterOpen && options.afterOpen.call(layero);
+            },
+            end:function () {
+
             }
         },options)
         layer.full(layer.open(opt));

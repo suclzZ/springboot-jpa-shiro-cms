@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component;
 public class ShiroProperties {
 
     /**
-     * 是否启用验证码
+     * verificationCode enable,defualt false
      */
     private boolean verify = false;
 
     /**
-     * 默认开启
+     * dev mode default true
      */
-    private boolean dev;
+    private boolean dev = true;
 
     /**
      *

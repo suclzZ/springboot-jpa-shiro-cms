@@ -4,7 +4,6 @@ import com.sucl.sbjms.core.util.DateUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,12 +13,11 @@ import java.util.Date;
  * @date 2019/4/3
  */
 @Component
-public class StringDateConvert implements Converter<String,Date> {
+public class DateStringConvert implements Converter<Date,String> {
+
     @Override
-    public Date convert(String source) {
-        if(DateUtils.isDate(source)){
-            return DateUtils.getDate(source);
-        }
-        return null;
+    public String convert(Date source) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(source);
     }
 }
