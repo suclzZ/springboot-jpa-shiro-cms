@@ -38,7 +38,7 @@ layui.define(['table'],function(exports){
         }
         this.ins = table.render(options);
         this.init();
-        return this.ins;
+        return new DegelateTableIns(this.ins);
     }
 
     Tabled.prototype.init = function(){
@@ -47,6 +47,48 @@ layui.define(['table'],function(exports){
             ins.config.elem.on('click', 'tr', function(){ //单击行
                 $(this).addClass('layui-table-selected').siblings().removeClass('layui-table-selected');
             });
+        }
+    }
+    
+    var DegelateTableIns = function(ins){
+        if(ins){
+            var that = this;
+            for(var prop in ins){
+                var oldProp = ins[prop];
+                if($.isFunction(oldProp)){
+                    ins[prop] = (function (fn) {
+                        return function () {
+                            if(arguments.length==1){
+                                var options = arguments[0];
+                                if(options.url && options.url.indexOf('/')==0){
+                                    options.url = layui.contextPath + options.url;
+                                }
+                                return fn.call(this,options);
+                            }
+                            fn.call(this,arguments);
+                        }
+                    })(oldProp);
+                }
+            }
+        }
+        return ins;
+    }
+
+    Tabled.prototype.reload = function(id,options){
+        var options,isIns=false;
+        if(arguments.length==1){
+            isIns = true;
+            options = arguments[0] ||  {};
+        }else if(arguments.length==2){
+            options = arguments[1] ||  {};
+        }
+        if(options.url && options.url.indexOf('/')==0){
+            options.url = layui.contextPath + options.url;
+        }
+        if(isIns){
+            this.reload(options)
+        }else{
+            table.reload(arguments[0],options);
         }
     }
     
